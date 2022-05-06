@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     {
         private const double rhythm_skill_multiplier = 0.014;
         private const double colour_skill_multiplier = 0.01;
-        private const double stamina_skill_multiplier = 0.02;
+        private const double stamina_skill_multiplier = 0.021;
 
         private double greatHitWindow = 0;
 
@@ -58,10 +58,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             List<TaikoDifficultyHitObject> taikoDifficultyHitObjects = new List<TaikoDifficultyHitObject>();
             // StreamWriter rcd = new StreamWriter($"/run/mount/secondary/workspace/osu/output/ratio-export/ratio-{beatmap.BeatmapInfo.Metadata.Title}.csv", append: false);
 
-            for (int i = 2; i < beatmap.HitObjects.Count; i++)
+            for (int i = 2; i < beatmap.HitObjects.Count - 1; i++)
             {
                 TaikoDifficultyHitObject hitObject = new TaikoDifficultyHitObject(
-                    beatmap.HitObjects[i], beatmap.HitObjects[i - 1], beatmap.HitObjects[i - 2], clockRate, i);
+                    beatmap.HitObjects[i], beatmap.HitObjects[i - 1], beatmap.HitObjects[i - 2], beatmap.HitObjects[i + 1], this.greatHitWindow, clockRate, i);
                 taikoDifficultyHitObjects.Add(hitObject);
                 // rcd.WriteLine($"{hitObject.Rhythm.Ratio},{hitObject.Rhythm.Difficulty}");
             }
@@ -156,7 +156,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 weight += 1;
             }
 
-            difficulty = difficulty * 2.22;
+            difficulty = difficulty * 2;
             return difficulty;
         }
 

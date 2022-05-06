@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     /// </summary>
     public class Rhythm : StrainDecaySkill
     {
-        protected override double SkillMultiplier => 2.1;
+        protected override double SkillMultiplier => 3.1;
         protected override double StrainDecayBase => 0;
 
         /// <summary>
@@ -89,8 +89,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
         private double leniencyPenalty(TaikoDifficultyHitObject hitObject)
         {
-            double leniency = greatHitWindow / hitObject.DeltaTime;
-            double penalty = sigmoid(leniency, 0.4, 0.3) * 0.2 + 0.8;
+            double penalty = sigmoid(hitObject.Rhythm.Leniency, 0.5, 0.3) * 0.5 + 0.5;
             return penalty;
         }
 
@@ -147,7 +146,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         /// Calculates a single rhythm repetition penalty.
         /// </summary>
         /// <param name="notesSince">Number of notes since the last repetition of a rhythm change.</param>
-        private static double repetitionPenalty(int notesSince) => Math.Min(1.0, 0.032 * notesSince);
+        private static double repetitionPenalty(int notesSince) => Math.Min(1.0, 0.06 * notesSince);
 
         /// <summary>
         /// Calculates a penalty based on the number of notes since the last rhythm change.
@@ -157,7 +156,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         private double patternLengthPenalty(int patternLength)
         {
             // double shortPatternPenalty = -sigmoid(patternLength, 2, 1.6) * 0.5 + 0.5;
-            double shortPatternPenalty = Math.Min(0.2 + 0.2 * patternLength, 1.0);
+            double shortPatternPenalty = Math.Min(0.15 * patternLength, 1.0);
             double longPatternPenalty = Math.Clamp(2.5 - 0.15 * patternLength, 0.0, 1.0);
             return shortPatternPenalty;
             // return Math.Min(shortPatternPenalty, longPatternPenalty);
@@ -169,11 +168,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         /// <param name="deltaTime">Time (in milliseconds) since the last hit object.</param>
         private double speedPenalty(double deltaTime)
         {
-            if (deltaTime < 80) return 1;
-            if (deltaTime < 210) return Math.Max(0, 1.4 - 0.005 * deltaTime);
+            if(deltaTime > 300) {
+                resetRhythmAndStrain();
+            }
 
-            resetRhythmAndStrain();
-            return 0.0;
+            return sigmoid(deltaTime, 160, 180) * 0.5 + 0.5;
+            // if (deltaTime < 80) return 1;
+            // if (deltaTime < 210) return Math.Max(0, 1.4 - 0.005 * deltaTime);
+
+            // resetRhythmAndStrain();
+            // return 0.0;
         }
 
         /// <summary>
