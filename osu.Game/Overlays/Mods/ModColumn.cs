@@ -265,7 +265,7 @@ namespace osu.Game.Overlays.Mods
             contentBackground.Colour = colourProvider.Background4;
         }
 
-        protected override void LoadComplete()
+        private void updateLocalAvailableMods()
         {
             base.LoadComplete();
 
