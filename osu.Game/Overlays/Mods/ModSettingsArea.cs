@@ -44,7 +44,6 @@ namespace osu.Game.Overlays.Mods
             {
                 RelativeSizeAxes = Axes.Both,
                 Masking = true,
-                BorderThickness = 2,
                 Children = new Drawable[]
                 {
                     background = new Box
@@ -159,7 +158,7 @@ namespace osu.Game.Overlays.Mods
                         new[] { Empty() },
                         new Drawable[]
                         {
-                            new NestedVerticalScrollContainer
+                            new OsuScrollContainer(Direction.Vertical)
                             {
                                 RelativeSizeAxes = Axes.Both,
                                 ClampExtension = 100,

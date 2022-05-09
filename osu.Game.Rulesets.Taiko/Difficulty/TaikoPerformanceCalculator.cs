@@ -39,7 +39,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 multiplier *= 0.90;
 
             if (score.Mods.Any(m => m is ModRelax))
-                multiplier *= 0.70;
+                multiplier *= 0.80;
 
             if (score.Mods.Any(m => m is ModHidden))
                 multiplier *= 1.10;
