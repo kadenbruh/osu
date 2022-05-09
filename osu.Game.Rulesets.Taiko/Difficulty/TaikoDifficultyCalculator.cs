@@ -82,8 +82,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             if (mods.Any(m => m is ModRelax))
             {
-                double rating = starRating - colourRating;
-                starRating = rating *= 0.8;
+                double rating = starRating - (colourRating + (staminaRating / 2));
+                starRating = rating *= 1.2;
             }
 
             return new TaikoDifficultyAttributes
