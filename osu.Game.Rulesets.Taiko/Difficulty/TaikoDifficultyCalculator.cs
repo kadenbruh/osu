@@ -59,8 +59,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double rhythmRating = Math.Sqrt(combined.RhythmDifficultyValue * difficulty_multiplier);
             double staminaRating = Math.Sqrt(combined.StaminaDifficultyValue * difficulty_multiplier);
 
-            double combinedRating = combined.DifficultyValue();
-            double starRating = rescale(combinedRating * difficulty_multiplier);
+            // Peaks Difficulty is the peak strain's of all three skills as a calculated value.
+            double peaksRating = combined.DifficultyValue();
+            double starRating = rescale(peaksRating * difficulty_multiplier);
 
             HitWindows hitWindows = new TaikoHitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
@@ -72,21 +73,21 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 StaminaDifficulty = staminaRating,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
-                PeakDifficulty = combinedRating,
+                PeaksDifficulty = peaksRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 MaxCombo = beatmap.HitObjects.Count(h => h is Hit),
             };
         }
 
         /// <summary>
-        /// Applies a final re-scaling of the star rating to bring maps with recorded full combos below 9.5 stars.
+        /// Applies a final re-scaling of the star rating.
         /// </summary>
         /// <param name="sr">The raw star rating value before re-scaling.</param>
         private double rescale(double sr)
         {
             if (sr < 0) return sr;
 
-            return 10.43 * Math.Log(sr / 8 + 1);
+            return 10.33 * Math.Log(sr / 8 + 1);
         }
     }
 }
