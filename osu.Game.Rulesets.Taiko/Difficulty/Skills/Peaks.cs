@@ -76,12 +76,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             }
 
             double difficulty = 0;
-            double weight = 1;
+            double weight = 0.12;
 
             foreach (double strain in peaks.OrderByDescending(d => d))
             {
-                difficulty += strain * weight;
-                weight *= 0.9;
+                difficulty += strain / weight;
+                weight /= final_multiplier;
             }
 
             return difficulty;
