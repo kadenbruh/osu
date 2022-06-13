@@ -51,18 +51,29 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         private double computeDifficultyValue(ScoreInfo score, TaikoDifficultyAttributes attributes)
         {
-            double difficultyValue = Math.Pow(5 * Math.Max(1.0, attributes.StarRating / 0.190) - 4.0, 2.25) / 450.0;
+            double starRating = 5 * Math.Max(1.0, attributes.StarRating / 0.180);
+
+            const double var1 = 4.0;
+
+            const double var2 = 2.25;
+
+            const double var3 = 450.0;
+
+            double difficultyValue = Math.Pow(starRating - var1, var2) / var3;
 
             double lengthBonus = 1 + 0.1 * Math.Min(1.0, totalHits / 1500.0);
             difficultyValue *= lengthBonus;
 
-            difficultyValue *= Math.Pow(0.985, countMiss);
+            difficultyValue *= Math.Pow(0.980, countMiss);
 
             if (score.Mods.Any(m => m is ModHidden))
-                difficultyValue *= 1.075;
+                difficultyValue *= 1.050;
 
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
                 difficultyValue *= 1.025 * lengthBonus;
+
+            if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>) && score.Mods.Any(m => m is ModHidden))
+                difficultyValue *= 1.15;
 
             return difficultyValue * score.Accuracy;
         }
@@ -72,13 +83,19 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (attributes.GreatHitWindow <= 0)
                 return 0;
 
-            double accuracyValue = Math.Pow(150.0 / attributes.GreatHitWindow, 1.1) * Math.Pow(score.Accuracy, 15) * 40.0;
+            double greatHitWindow = Math.Pow(100.0 / attributes.GreatHitWindow, 1.1);
+
+            double accuracy = Math.Pow(score.Accuracy, 15);
+
+            double starRating = Math.Max(1.0, attributes.StarRating / 0.180);
+
+            double accuracyValue = greatHitWindow * accuracy * starRating;
 
             double accuracylengthBonus = Math.Min(1.15, Math.Pow(totalHits / 1500.0, 0.3));
             accuracyValue *= accuracylengthBonus;
 
             if (score.Mods.Any(m => m is ModHidden))
-                accuracyValue *= 1.075;
+                accuracyValue *= 1.050;
 
             return accuracyValue;
         }
