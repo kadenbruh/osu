@@ -62,7 +62,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 difficultyValue *= 1.075;
 
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
-                difficultyValue *= 1.050 * lengthBonus;
+                difficultyValue *= 1.025 * lengthBonus;
 
             return difficultyValue * score.Accuracy;
         }
@@ -79,9 +79,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             if (score.Mods.Any(m => m is ModHidden))
                 accuracyValue *= 1.075;
-
-            if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
-                accuracyValue *= 1.15 * accuracylengthBonus;
 
             return accuracyValue;
         }
