@@ -18,8 +18,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     /// </summary>
     public class Colour : StrainDecaySkill
     {
-        protected override double SkillMultiplier => 1;
-        protected override double StrainDecayBase => 0.4;
+        protected override double SkillMultiplier => 1.0;
+        protected override double StrainDecayBase => 0.40;
 
         /// <summary>
         /// Maximum number of entries to keep in <see cref="monoHistory"/>.
