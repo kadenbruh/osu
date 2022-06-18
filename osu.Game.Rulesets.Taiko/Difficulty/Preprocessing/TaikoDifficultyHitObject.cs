@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Taiko.Objects;
@@ -28,10 +29,30 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         public readonly HitType? HitType;
 
         /// <summary>
-        /// Whether the object should carry a penalty due to being hittable using special techniques
-        /// making it easier to do so.
+        /// Creates a list of <see cref="TaikoDifficultyHitObject"/>s from a <see cref="IBeatmap"/>s.
+        /// This is moved here from TaikoDifficultyCalculator
         /// </summary>
-        public bool StaminaCheese;
+        /// <param name="beatmap">The beatmap from which the list of <see cref="TaikoDifficultyHitObject"/> is created.</param>
+        /// <param name="clockRate">The rate at which the gameplay clock is run at.</param>
+        public static List<DifficultyHitObject> Create(IBeatmap beatmap, double clockRate)
+        {
+            List<DifficultyHitObject> taikoDifficultyHitObjects = new List<DifficultyHitObject>();
+
+            for (int i = 2; i < beatmap.HitObjects.Count; i++)
+            {
+                taikoDifficultyHitObjects.Add(
+                    new TaikoDifficultyHitObject(
+                        beatmap.HitObjects[i],
+                        beatmap.HitObjects[i - 1],
+                        beatmap.HitObjects[i - 2],
+                        clockRate, taikoDifficultyHitObjects,
+                        taikoDifficultyHitObjects.Count
+                    )
+                );
+            }
+
+            return taikoDifficultyHitObjects;
+        }
 
         /// <summary>
         /// Creates a new difficulty hit object.
