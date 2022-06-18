@@ -30,13 +30,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double ColourDifficulty { get; set; }
 
         /// <summary>
-        /// The perceived approach rate inclusive of rate-adjusting mods (DT/HT/etc).
+        /// The difficulty corresponding to the peak strains of all skills.
         /// </summary>
-        /// <remarks>
-        /// Rate-adjusting mods don't directly affect the approach rate difficulty value, but have a perceived effect as a result of adjusting audio timing.
-        /// </remarks>
-        [JsonProperty("approach_rate")]
-        public double ApproachRate { get; set; }
+        [JsonProperty("peaks_difficulty")]
+        public double PeaksDifficulty { get; set; }
 
         /// <summary>
         /// The perceived hit window for a GREAT hit inclusive of rate-adjusting mods (DT/HT/etc).
