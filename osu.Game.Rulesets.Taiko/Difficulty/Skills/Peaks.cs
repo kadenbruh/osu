@@ -13,7 +13,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         private const double colour_skill_multiplier = 0.37 * final_multiplier;
         private const double stamina_skill_multiplier = 0.37 * final_multiplier;
 
-        // The final multiplier is used to globally scale skill values.
+        // The final multiplier is used to internally scale skill values.
         private const double final_multiplier = 0.047;
 
         private readonly Rhythm rhythm;
@@ -52,11 +52,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         }
 
         /// <summary>
-        /// Returns the combined star rating of the beatmap, calculated using peak strains from all sections of the map.
+        /// Returns the aggregated skill towards the star rating of a beatmap, calculated using peak strains from all sections of the map.
         /// </summary>
         /// <remarks>
         /// For each section, the peak strains of all separate skills are combined into a single peak strain for the section.
-        /// The resulting partial rating of the beatmap is a weighted sum of the combined peaks (higher peaks are weighted more).
+        /// The resulting rating of the beatmap is a weighted sum of the combined peaks (higher peaks are weighted more).
         /// </remarks>
         public override double DifficultyValue()
         {

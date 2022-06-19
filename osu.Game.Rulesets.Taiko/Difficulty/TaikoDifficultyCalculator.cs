@@ -57,11 +57,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             var skill = (Peaks)skills[0];
 
+            // Used to return a Rating of each skill, however this is not used in Star Rating calculation of a beatmap.
             double colourRating = Math.Sqrt(skill.ColourDifficultyValue * difficulty_multiplier);
             double rhythmRating = Math.Sqrt(skill.RhythmDifficultyValue * difficulty_multiplier);
             double staminaRating = Math.Sqrt(skill.StaminaDifficultyValue * difficulty_multiplier);
 
-            // Peaks Difficulty is the peak strains of all three skills as a calculated value.
             double peaksRating = skill.DifficultyValue();
             double starRating = rescale(peaksRating * difficulty_multiplier);
 
@@ -82,7 +82,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         }
 
         /// <summary>
-        /// Applies a final re-scaling of the star rating.
+        /// Applies a final re-scaling of the star rating using a natural logarithm to bring all ranked maps under 10 stars.
         /// </summary>
         /// <param name="sr">The raw star rating value before re-scaling.</param>
         private double rescale(double sr)
