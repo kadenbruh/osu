@@ -88,7 +88,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             Console.WriteLine(readingRating);
 
             double combinedRating = combined.DifficultyValue() * difficulty_multiplier;
-            double starRating = rescale(combinedRating * 1.4);
+            double starRating = combinedRating * 1.4;
 
             HitWindows hitWindows = new TaikoHitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
@@ -105,17 +105,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 GreatHitWindow = greatHitWindow,
                 MaxCombo = beatmap.HitObjects.Count(h => h is Hit),
             };
-        }
-
-        /// <summary>
-        /// Applies a re-scaling aimed to increase spread of difficulty values at the higher-end.
-        /// </summary>
-        /// <param name="difficulty">The raw difficulty produced by peaks before re-scaling.</param>
-        private double rescale(double difficulty)
-        {
-            if (difficulty < 0) return difficulty;
-
-            return 10.43 * Math.Log(difficulty / 8 + 1);
         }
     }
 }

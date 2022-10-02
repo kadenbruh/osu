@@ -48,6 +48,17 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         /// <param name="values">The coefficients of the vector.</param>
         private double norm(double p, params double[] values) => Math.Pow(values.Sum(x => Math.Pow(x, p)), 1 / p);
 
+        /// <summary>
+        /// Applies a re-scaling aimed to increase spread of difficulty values at the higher-end.
+        /// </summary>
+        /// <param name="difficulty">The raw difficulty produced by peaks before re-scaling.</param>
+        private double rescale(double difficulty)
+        {
+            if (difficulty < 0) return difficulty;
+
+            return 9.15 * Math.Log(difficulty / 8 + 1);
+        }
+
         public override void Process(DifficultyHitObject current)
         {
             rhythm.Process(current);
@@ -97,7 +108,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
                 weight *= 0.9;
             }
 
-            return difficulty;
+            return rescale(difficulty);
         }
     }
 }
