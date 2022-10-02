@@ -75,13 +75,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             difficultyValue *= Math.Pow(0.986, effectiveMissCount);
 
-            if (score.Mods.Any(m => m is ModEasy))
-                difficultyValue *= 0.90;
-
-            if (score.Mods.Any(m => m is ModHidden) && rulesetTaiko)
-                difficultyValue *= 1.025;
-
             if (score.Mods.Any(m => m is ModHardRock))
+                difficultyValue *= 1.050;
+
+            if (score.Mods.Any(m => m is ModEasy))
+                difficultyValue *= 0.960;
+
+            if (score.Mods.Any(m => m is ModHardRock) && rulesetTaiko)
                 difficultyValue *= 1.050;
 
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
