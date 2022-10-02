@@ -72,8 +72,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
             double objectStrain = hitObject.Rhythm.Difficulty;
 
-            // objectStrain *= repetitionPenalties(hitObject);
-            // objectStrain *= patternLengthPenalty(notesSinceRhythmChange);
+            objectStrain *= repetitionPenalties(hitObject);
+            objectStrain *= patternLengthPenalty(notesSinceRhythmChange);
             objectStrain *= speedPenalty(hitObject.DeltaTime);
             objectStrain *= leniencyPenalty(hitObject);
 
