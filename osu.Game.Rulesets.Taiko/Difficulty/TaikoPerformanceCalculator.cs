@@ -49,9 +49,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (score.Mods.Any(m => m is ModHidden))
                 multiplier *= 1.075;
 
-            //if (score.Mods.Any(m => m is ModEasy))
-                //multiplier *= 0.975;
-
             double difficultyValue = computeDifficultyValue(score, taikoAttributes, rulesetTaiko);
             double accuracyValue = computeAccuracyValue(score, taikoAttributes, rulesetTaiko);
             double totalValue =
@@ -78,8 +75,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             difficultyValue *= Math.Pow(0.986, effectiveMissCount);
 
-            //if (score.Mods.Any(m => m is ModEasy))
-                //difficultyValue *= 0.985;
+            if (score.Mods.Any(m => m is ModEasy))
+                difficultyValue *= 0.90;
 
             if (score.Mods.Any(m => m is ModHidden) && rulesetTaiko)
                 difficultyValue *= 1.025;

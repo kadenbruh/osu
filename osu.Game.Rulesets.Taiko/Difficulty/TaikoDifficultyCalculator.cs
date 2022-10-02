@@ -13,7 +13,6 @@ using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
-using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Colour;
 using osu.Game.Rulesets.Taiko.Difficulty.Skills;
 using osu.Game.Rulesets.Taiko.Mods;
 using osu.Game.Rulesets.Taiko.Objects;
@@ -25,7 +24,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     {
         private const double difficulty_multiplier = 1.35;
 
-        private double greatHitWindow = 0;
+        private double greatHitWindow;
 
         public override int Version => 20220902;
 
@@ -70,7 +69,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 );
             }
 
-            TaikoColourDifficultyPreprocessor.ProcessAndAssign(difficultyHitObjects);
+            TaikoDifficultyPreprocessor.Process(Beatmap, difficultyHitObjects, noteObjects);
 
             return difficultyHitObjects;
         }
@@ -85,6 +84,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double colourRating = combined.ColourDifficultyValue * difficulty_multiplier;
             double rhythmRating = combined.RhythmDifficultyValue * difficulty_multiplier;
             double staminaRating = combined.StaminaDifficultyValue * difficulty_multiplier;
+            double readingRating = combined.ReadingDifficultyValue * difficulty_multiplier;
+            Console.WriteLine(readingRating);
 
             double combinedRating = combined.DifficultyValue() * difficulty_multiplier;
             double starRating = rescale(combinedRating * 1.4);
@@ -99,6 +100,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 StaminaDifficulty = staminaRating,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
+                ReadingDifficulty = readingRating,
                 PeakDifficulty = combinedRating,
                 GreatHitWindow = greatHitWindow,
                 MaxCombo = beatmap.HitObjects.Count(h => h is Hit),

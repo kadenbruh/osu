@@ -8,6 +8,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Taiko.Objects;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Colour;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm;
+using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Reading;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
 {
@@ -48,6 +49,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         public readonly TaikoDifficultyHitObjectColour Colour;
 
         /// <summary>
+        /// Contains reading information for this hit object. Reading information refers to sv and mod-related information,
+        /// and does not include colour and rhyhtm patterns.
+        /// </summary>
+        public TaikoDifficultyHitObjectReading Reading;
+
+        /// <summary>
         /// Creates a new difficulty hit object.
         /// </summary>
         /// <param name="hitObject">The gameplay <see cref="HitObject"/> associated with this difficulty object.</param>
@@ -68,8 +75,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         {
             noteDifficultyHitObjects = noteObjects;
 
-            // Create the Colour object, its properties should be filled in by TaikoDifficultyPreprocessor
+            // Create the Colour and Reading objects, their properties should be
+            // filled in by the relevant preprocessors
             Colour = new TaikoDifficultyHitObjectColour();
+            Reading = new TaikoDifficultyHitObjectReading();
             Rhythm = createRhythmChange(lastObject, lastLastObject, clockRate);
 
             switch ((hitObject as Hit)?.Type)

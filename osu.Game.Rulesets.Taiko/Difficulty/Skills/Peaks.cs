@@ -15,18 +15,21 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         private const double rhythm_skill_multiplier = 0.375 * final_multiplier;
         private const double colour_skill_multiplier = 0.375 * final_multiplier;
         private const double stamina_skill_multiplier = 0.375 * final_multiplier;
+        private const double reading_skill_multiplier = 0.1 * final_multiplier;
 
         private const double final_multiplier = 0.0625;
 
         private readonly Rhythm rhythm;
         private readonly Colour colour;
         private readonly Stamina stamina;
+        private readonly Reading reading;
 
         private readonly double greatHitWindow;
 
         public double ColourDifficultyValue => colour.DifficultyValue() * colour_skill_multiplier;
         public double RhythmDifficultyValue => rhythm.DifficultyValue() * rhythm_skill_multiplier;
         public double StaminaDifficultyValue => stamina.DifficultyValue() * stamina_skill_multiplier;
+        public double ReadingDifficultyValue => reading.DifficultyValue() * reading_skill_multiplier;
 
         public Peaks(Mod[] mods, double greatHitWindow)
             : base(mods)
@@ -34,6 +37,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             rhythm = new Rhythm(mods, greatHitWindow);
             colour = new Colour(mods);
             stamina = new Stamina(mods);
+            reading = new Reading(mods);
             this.greatHitWindow = greatHitWindow;
         }
 
@@ -49,6 +53,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             rhythm.Process(current);
             colour.Process(current);
             stamina.Process(current);
+            reading.Process(current);
         }
 
         /// <summary>
@@ -65,14 +70,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             var colourPeaks = colour.GetCurrentStrainPeaks().ToList();
             var rhythmPeaks = rhythm.GetCurrentStrainPeaks().ToList();
             var staminaPeaks = stamina.GetCurrentStrainPeaks().ToList();
+            var readingPeaks = reading.GetCurrentStrainPeaks().ToList();
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
                 double colourPeak = colourPeaks[i] * colour_skill_multiplier;
                 double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
+                double readingPeak = readingPeaks[i] * reading_skill_multiplier;
 
-                double peak = norm(1.5, colourPeak, staminaPeak);
+                double peak = norm(1.5, colourPeak, staminaPeak, readingPeak);
                 peak = norm(2, peak, rhythmPeak);
 
                 // Sections with 0 strain are excluded to avoid worst-case time complexity of the following sort (e.g. /b/2351871).
