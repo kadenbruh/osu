@@ -16,12 +16,33 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         /// <param name="interval">The interval between the current and previous note hit using the same key.</param>
         private static double speedBonus(double interval)
         {
-            // Cap to 600bpm 1/4, 25ms note interval, 50ms key interval
-            // Interval will be capped at a very small value to avoid infinite/negative speed bonuses.
-            // TODO - This is a temporary measure as we need to implement methods of detecting playstyle-abuse of SpeedBonus.
-            interval = Math.Max(interval, 50);
+            // Interval is capped at a very small value to prevent infinite values.
+            interval = Math.Max(interval, 1);
 
             return 30 / interval;
+        }
+
+        /// <summary>
+        /// Determines the number of fingers available to hit the current <see cref="TaikoDifficultyHitObject"/>.
+        /// Any mono notes that is more than 0.5s apart from note of the other colour will be considered to have more
+        /// than 2 fingers available, since players can move their hand over to hit the same key with multiple fingers.
+        /// </summary>
+        private static int availableFingersFor(TaikoDifficultyHitObject hitObject)
+        {
+            DifficultyHitObject? previousColourChange = hitObject.Colour.PreviousColourChange;
+            DifficultyHitObject? nextColourChange = hitObject.Colour.NextColourChange;
+
+            if (previousColourChange != null && hitObject.StartTime - previousColourChange.StartTime < 300)
+            {
+                return 2;
+            }
+
+            if (nextColourChange != null && nextColourChange.StartTime - hitObject.StartTime < 300)
+            {
+                return 2;
+            }
+
+            return 4;
         }
 
         /// <summary>
@@ -37,7 +58,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
 
             // Find the previous hit object hit by the current key, which is two notes of the same colour prior.
             TaikoDifficultyHitObject taikoCurrent = (TaikoDifficultyHitObject)current;
-            TaikoDifficultyHitObject? keyPrevious = taikoCurrent.PreviousMono(1);
+            TaikoDifficultyHitObject? keyPrevious = taikoCurrent.PreviousMono(availableFingersFor(taikoCurrent) - 1);
 
             if (keyPrevious == null)
             {
