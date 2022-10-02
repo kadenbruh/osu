@@ -12,7 +12,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
     public class Peaks : Skill
     {
-        private const double rhythm_skill_multiplier = 0.2 * final_multiplier;
+        private const double rhythm_skill_multiplier = 0.375 * final_multiplier;
         private const double colour_skill_multiplier = 0.375 * final_multiplier;
         private const double stamina_skill_multiplier = 0.375 * final_multiplier;
 
@@ -22,16 +22,19 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         private readonly Colour colour;
         private readonly Stamina stamina;
 
+        private readonly double greatHitWindow;
+
         public double ColourDifficultyValue => colour.DifficultyValue() * colour_skill_multiplier;
         public double RhythmDifficultyValue => rhythm.DifficultyValue() * rhythm_skill_multiplier;
         public double StaminaDifficultyValue => stamina.DifficultyValue() * stamina_skill_multiplier;
 
-        public Peaks(Mod[] mods)
+        public Peaks(Mod[] mods, double greatHitWindow)
             : base(mods)
         {
-            rhythm = new Rhythm(mods);
+            rhythm = new Rhythm(mods, greatHitWindow);
             colour = new Colour(mods);
             stamina = new Stamina(mods);
+            this.greatHitWindow = greatHitWindow;
         }
 
         /// <summary>

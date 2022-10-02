@@ -25,6 +25,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     {
         private const double difficulty_multiplier = 1.35;
 
+        private double greatHitWindow = 0;
+
         public override int Version => 20220902;
 
         public TaikoDifficultyCalculator(IRulesetInfo ruleset, IWorkingBeatmap beatmap)
@@ -34,9 +36,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         protected override Skill[] CreateSkills(IBeatmap beatmap, Mod[] mods, double clockRate)
         {
+            HitWindows hitWindows = new TaikoHitWindows();
+            hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
+            greatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate;
+
             return new Skill[]
             {
-                new Peaks(mods)
+                new Peaks(mods, greatHitWindow)
             };
         }
 
@@ -83,15 +89,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double combinedRating = combined.DifficultyValue() * difficulty_multiplier;
             double starRating = rescale(combinedRating * 1.4);
 
-            // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
-            if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
-            {
-                starRating *= 0.925;
-                // For maps with low colour variance and high stamina requirement, multiple inputs are more likely to be abused.
-                if (colourRating < 2 && staminaRating > 8)
-                    starRating *= 0.80;
-            }
-
             HitWindows hitWindows = new TaikoHitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
 
@@ -103,20 +100,20 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
                 PeakDifficulty = combinedRating,
-                GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
+                GreatHitWindow = greatHitWindow,
                 MaxCombo = beatmap.HitObjects.Count(h => h is Hit),
             };
         }
 
         /// <summary>
-        /// Applies a final re-scaling of the star rating.
+        /// Applies a re-scaling aimed to increase spread of difficulty values at the higher-end.
         /// </summary>
-        /// <param name="sr">The raw star rating value before re-scaling.</param>
-        private double rescale(double sr)
+        /// <param name="difficulty">The raw difficulty produced by peaks before re-scaling.</param>
+        private double rescale(double difficulty)
         {
-            if (sr < 0) return sr;
+            if (difficulty < 0) return difficulty;
 
-            return 10.43 * Math.Log(sr / 8 + 1);
+            return 10.43 * Math.Log(difficulty / 8 + 1);
         }
     }
 }
