@@ -29,16 +29,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
 
         private static readonly TaikoDifficultyHitObjectRhythm[] common_rhythms =
         {
-        new TaikoDifficultyHitObjectRhythm(1, 1, 0.0),
-        new TaikoDifficultyHitObjectRhythm(2, 1, 0.3),
-        new TaikoDifficultyHitObjectRhythm(1, 2, 0.5),
-        new TaikoDifficultyHitObjectRhythm(3, 1, 0.3),
-        new TaikoDifficultyHitObjectRhythm(1, 3, 0.35),
-        new TaikoDifficultyHitObjectRhythm(3, 2, 0.6),
-        new TaikoDifficultyHitObjectRhythm(2, 3, 0.4),
-        new TaikoDifficultyHitObjectRhythm(5, 4, 0.5),
-        new TaikoDifficultyHitObjectRhythm(4, 5, 0.7)
-    };
+            new TaikoDifficultyHitObjectRhythm(1, 1, 0.0),
+            new TaikoDifficultyHitObjectRhythm(2, 1, 0.3),
+            new TaikoDifficultyHitObjectRhythm(1, 2, 0.5),
+            new TaikoDifficultyHitObjectRhythm(3, 1, 0.3),
+            new TaikoDifficultyHitObjectRhythm(1, 3, 0.35),
+            new TaikoDifficultyHitObjectRhythm(3, 2, 0.6),
+            new TaikoDifficultyHitObjectRhythm(2, 3, 0.4),
+            new TaikoDifficultyHitObjectRhythm(5, 4, 0.5),
+            new TaikoDifficultyHitObjectRhythm(4, 5, 0.7)
+        };
 
         public TaikoDifficultyHitObjectRhythm(TaikoDifficultyHitObject current)
         {
