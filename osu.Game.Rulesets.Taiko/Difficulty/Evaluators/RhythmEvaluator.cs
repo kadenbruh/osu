@@ -80,10 +80,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             double difficulty = 0.0d;
 
             if (rhythm.EvenHitObjects?.FirstHitObject == hitObject) // Difficulty for EvenHitObjects
-                difficulty += 0.5 * evaluateDifficultyOf(rhythm.EvenHitObjects, hitWindow) * rhythm.Difficulty; // Raise rhythm difficulty to power > 1
+                difficulty += 0.5 * evaluateDifficultyOf(rhythm.EvenHitObjects, hitWindow) * rhythm.Difficulty;
             if (rhythm.EvenPatterns?.FirstHitObject == hitObject) // Difficulty for EvenPatterns
-                difficulty += evaluateDifficultyOf(rhythm.EvenPatterns) * rhythm.Difficulty; // Raise rhythm difficulty to power > 1
-
+                difficulty += evaluateDifficultyOf(rhythm.EvenPatterns);
             return difficulty;
         }
     }
