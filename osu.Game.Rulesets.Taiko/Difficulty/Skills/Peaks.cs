@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     public class TaikoStrain : IComparable<TaikoStrain>
     {
         private const double final_multiplier = 0.15;
-        private const double rhythm_skill_multiplier = 0.33 * final_multiplier;
+        private const double rhythm_skill_multiplier = 0.42 * final_multiplier;
         private const double colour_skill_multiplier = 0.33 * final_multiplier;
         private const double stamina_skill_multiplier = 0.42 * final_multiplier;
 
