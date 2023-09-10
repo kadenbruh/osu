@@ -11,7 +11,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
     public class Pattern : StrainDecaySkill
     {
-        private PatternEvaluator evaluator;
+        private readonly PatternEvaluator evaluator;
 
         public Pattern(Mod[] mods, double hitWindow) : base(mods)
         {

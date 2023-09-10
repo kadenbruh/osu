@@ -11,8 +11,6 @@ using osu.Game.Rulesets.Taiko.Difficulty.Evaluators;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
-    // TODO: Not sure where this should go, but it's only used in Peak so I'm
-    //       placing it here for now
     public class TaikoStrain : IComparable<TaikoStrain>
     {
         private const double final_multiplier = 0.177;
