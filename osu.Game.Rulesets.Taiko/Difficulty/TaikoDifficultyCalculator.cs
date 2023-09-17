@@ -67,8 +67,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             for (int i = 2; i < beatmap.HitObjects.Count; i++)
             {
                 TaikoDifficultyHitObject hitObject = new TaikoDifficultyHitObject(
-                        beatmap.HitObjects[i], beatmap.HitObjects[i - 1], beatmap.HitObjects[i - 2], clockRate,
-                        difficultyHitObjects, centreObjects, rimObjects, noteObjects, difficultyHitObjects.Count);
+                    beatmap.HitObjects[i], beatmap.HitObjects[i - 1], beatmap.HitObjects[i - 2], clockRate,
+                    difficultyHitObjects, centreObjects, rimObjects, noteObjects, difficultyHitObjects.Count);
                 difficultyHitObjects.Add(hitObject);
                 taikoDifficultyHitObjects.Add(hitObject);
             }
@@ -91,6 +91,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             // These have to be read after combined.DifficultyValue() is set
             double patternRating = combined.PatternStat;
+            double colourRating = combined.ColourStat;
             double rhythmRating = combined.RhythmStat;
             double staminaRating = combined.StaminaStat;
 
@@ -102,9 +103,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 StarRating = starRating,
                 Mods = mods,
                 StaminaDifficulty = staminaRating,
+                ColourDifficulty = colourRating,
+                RhythmDifficulty = rhythmRating,
                 PatternDifficulty = patternRating,
                 PeakDifficulty = combinedRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
+                OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
                 MaxCombo = beatmap.HitObjects.Count(h => h is Hit),
             };
 

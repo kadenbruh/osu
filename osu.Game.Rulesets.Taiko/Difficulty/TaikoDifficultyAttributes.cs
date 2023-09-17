@@ -17,10 +17,20 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double StaminaDifficulty { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the colour skill.
+        /// The difficulty corresponding to the pattern skill.
         /// </summary>
         [JsonProperty("pattern_difficulty")]
         public double PatternDifficulty { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the colour skill.
+        /// </summary>
+        public double ColourDifficulty { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the rhythm skill.
+        /// </summary>
+        public double RhythmDifficulty { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.
@@ -36,6 +46,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// </remarks>
         [JsonProperty("great_hit_window")]
         public double GreatHitWindow { get; set; }
+
+        /// <summary>
+        /// The perceived hit window for an OK hit inclusive of rate-adjusting mods (DT/HT/etc).
+        /// </summary>
+        /// <remarks>
+        /// Rate-adjusting mods don't directly affect the hit window, but have a perceived effect as a result of adjusting audio timing.
+        /// </remarks>
+        [JsonProperty("ok_hit_window")]
+        public double OkHitWindow { get; set; }
 
         public override IEnumerable<(int attributeId, object value)> ToDatabaseAttributes()
         {
