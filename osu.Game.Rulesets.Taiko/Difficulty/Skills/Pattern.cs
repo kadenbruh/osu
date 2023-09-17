@@ -13,9 +13,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     {
         private readonly PatternEvaluator evaluator;
 
-        public Pattern(Mod[] mods, double hitWindow) : base(mods)
+        public Pattern(Mod[] mods, double hitWindow)
+            : base(mods)
         {
-            evaluator = new(hitWindow);
+            evaluator = new PatternEvaluator(hitWindow);
         }
 
         protected override double SkillMultiplier => 0.5;
