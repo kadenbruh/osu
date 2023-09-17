@@ -14,18 +14,18 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     public class TaikoStrain : IComparable<TaikoStrain>
     {
         private const double final_multiplier = 0.177;
-        private const double pattern_skill_multiplier = 0.35 * final_multiplier;
+        private const double pattern_skill_multiplier = 0.65 * final_multiplier;
         private const double stamina_skill_multiplier = 0.45 * final_multiplier;
-        private const double colour_skill_multiplier = 0.45 * final_multiplier;
+        private const double colour_skill_multiplier = 0.20 * final_multiplier;
 
         public readonly double Pattern;
         public readonly double Stamina;
         public readonly double Colour;
         public readonly double Combined;
 
-        public TaikoStrain(double colour, double stamina)
+        public TaikoStrain(double pattern, double stamina, double colour)
         {
-            Pattern = colour * pattern_skill_multiplier;
+            Pattern = pattern * pattern_skill_multiplier;
             Stamina = stamina * stamina_skill_multiplier;
             Colour = colour * colour_skill_multiplier;
             Combined = MathEvaluator.Norm(3, Pattern, Stamina, Colour);
@@ -85,7 +85,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
             for (int i = 0; i < patternPeaks.Count; i++)
             {
-                TaikoStrain peak = new TaikoStrain(patternPeaks[i], staminaPeaks[i]);
+                TaikoStrain peak = new TaikoStrain(patternPeaks[i], staminaPeaks[i], colourPeaks[i]);
 
                 // Sections with 0 strain are excluded to avoid worst-case time complexity of the following sort (e.g. /b/2351871).
                 // These sections will not contribute to the difficulty.
