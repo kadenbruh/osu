@@ -111,6 +111,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             PatternStat = patternDifficulty;
             StaminaStat = staminaDifficulty;
             ColourStat = colourDifficulty;
+            RhythmStat = patternDifficulty - colourDifficulty;
 
             return combinedDifficulty;
         }
