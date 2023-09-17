@@ -25,11 +25,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// <summary>
         /// The difficulty corresponding to the colour skill.
         /// </summary>
+        [JsonProperty("colour_difficulty")]
         public double ColourDifficulty { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the rhythm skill.
         /// </summary>
+        [JsonProperty("rhythm_difficulty")]
         public double RhythmDifficulty { get; set; }
 
         /// <summary>
