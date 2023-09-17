@@ -18,7 +18,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     {
         // The estimate ratio of pattern difficulty to peak difficulty, assuming all skills having an even contribution.
         // This is estimated by taking sqrt(0.33^2 + 0.33^2) / sqrt(0.33^2 + 0.33^2 + 0.42^2)
-        private const double pattern_ratio = 0.7433;
+        private const double pattern_ratio = 0.87622629032;
 
         private int countGreat;
         private int countOk;
@@ -60,7 +60,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 multiplier *= 0.975;
 
             double difficultyValue = computeDifficultyValue(score, taikoAttributes, readingMultiplier);
-            double accuracyValue = computeAccuracyValue(score, taikoAttributes, readingMultiplier);
+            double accuracyValue = computeAccuracyValue(taikoAttributes);
             double totalValue =
                 Math.Pow(
                     Math.Pow(difficultyValue, 1.1) +
@@ -87,13 +87,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             difficultyValue *= Math.Pow(0.986, effectiveMissCount);
 
             if (score.Mods.Any(m => m is ModEasy))
-                difficultyValue *= 0.985;
+                difficultyValue *= 1 - 0.015 * readingMultiplier;
 
             if (score.Mods.Any(m => m is ModHidden))
-                difficultyValue *= 1 + 0.025 * readingMultiplier;
+                difficultyValue *= 1 + 0.050 * readingMultiplier;
 
             if (score.Mods.Any(m => m is ModHardRock))
-                difficultyValue *= 1.10;
+                difficultyValue *= 1 + 0.010 * readingMultiplier;
 
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
                 difficultyValue *= (1 + 0.050 * readingMultiplier) * lengthBonus;
@@ -101,10 +101,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (estimatedUr == null)
                 return 0;
 
+            Console.WriteLine(readingMultiplier);
+
             return difficultyValue * Math.Pow(SpecialFunctions.Erf(400 / (Math.Sqrt(2) * estimatedUr.Value)), 2.0);
         }
 
-        private double computeAccuracyValue(ScoreInfo score, TaikoDifficultyAttributes attributes, double readingMultiplier)
+        private double computeAccuracyValue(TaikoDifficultyAttributes attributes)
         {
             if (attributes.GreatHitWindow <= 0 || estimatedUr == null)
                 return 0;
@@ -113,10 +115,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             double lengthBonus = Math.Min(1.15, Math.Pow(totalHits / 1500.0, 0.3));
             accuracyValue *= lengthBonus;
-
-            // Slight HDFL Bonus for accuracy. A clamp is used to prevent against negative values.
-            if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>) && score.Mods.Any(m => m is ModHidden))
-                accuracyValue *= 1 + Math.Max(0.0, 0.1 * lengthBonus) * readingMultiplier;
 
             return accuracyValue;
         }
