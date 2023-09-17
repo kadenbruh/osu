@@ -142,7 +142,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         private double escale(double combined)
         {
-            return Math.Floor((1.0 / 2.6) * (Curve(2 * combined) + Curve(combined)) * 10.0) / 10.0;
+            return Math.Floor((1.0 / 2.6) * (Curve(2 * combined) + Curve(combined)) * 100.0) / 100.0;
         }
     }
 }
