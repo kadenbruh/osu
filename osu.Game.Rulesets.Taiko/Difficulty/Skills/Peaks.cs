@@ -14,18 +14,21 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     public class TaikoStrain : IComparable<TaikoStrain>
     {
         private const double final_multiplier = 0.177;
-        private const double pattern_skill_multiplier = 0.55 * final_multiplier;
+        private const double pattern_skill_multiplier = 0.35 * final_multiplier;
         private const double stamina_skill_multiplier = 0.45 * final_multiplier;
+        private const double colour_skill_multiplier = 0.45 * final_multiplier;
 
         public readonly double Pattern;
         public readonly double Stamina;
+        public readonly double Colour;
         public readonly double Combined;
 
         public TaikoStrain(double colour, double stamina)
         {
             Pattern = colour * pattern_skill_multiplier;
             Stamina = stamina * stamina_skill_multiplier;
-            Combined = MathEvaluator.Norm(3, Pattern, Stamina);
+            Colour = colour * colour_skill_multiplier;
+            Combined = MathEvaluator.Norm(3, Pattern, Stamina, Colour);
         }
 
         int IComparable<TaikoStrain>.CompareTo(TaikoStrain? other)
@@ -41,23 +44,28 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
     {
         private readonly Pattern pattern;
         private readonly Stamina stamina;
+        private readonly Colour colour;
 
         // These stats are only defined after DifficultyValue() is called
         public double RhythmStat { get; private set; }
         public double PatternStat { get; private set; }
         public double StaminaStat { get; private set; }
 
+        public double ColourStat { get; private set; }
+
         public Peaks(Mod[] mods, double greatHitWindow)
             : base(mods)
         {
             pattern = new Pattern(mods, greatHitWindow);
             stamina = new Stamina(mods);
+            colour = new Colour(mods);
         }
 
         public override void Process(DifficultyHitObject current)
         {
             pattern.Process(current);
             stamina.Process(current);
+            colour.Process(current);
         }
 
         /// <summary>
@@ -73,6 +81,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
             var patternPeaks = pattern.GetCurrentStrainPeaks().ToList();
             var staminaPeaks = stamina.GetCurrentStrainPeaks().ToList();
+            var colourPeaks = colour.GetCurrentStrainPeaks().ToList();
 
             for (int i = 0; i < patternPeaks.Count; i++)
             {
@@ -87,6 +96,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             double combinedDifficulty = 0;
             double patternDifficulty = 0;
             double staminaDifficulty = 0;
+            double colourDifficulty = 0;
             double weight = 1;
 
             foreach (TaikoStrain strain in peaks.OrderByDescending(d => d))
@@ -94,11 +104,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
                 combinedDifficulty += strain.Combined * weight;
                 patternDifficulty += strain.Pattern * weight;
                 staminaDifficulty += strain.Stamina * weight;
+                colourDifficulty += strain.Colour * weight;
                 weight *= 0.9;
             }
 
             PatternStat = patternDifficulty;
             StaminaStat = staminaDifficulty;
+            ColourStat = colourDifficulty;
 
             return combinedDifficulty;
         }
