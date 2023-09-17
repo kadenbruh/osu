@@ -86,8 +86,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             var combined = (Peaks)skills[0];
 
-            double combinedRating = combined.DifficultyValue();
-            double starRating = rescale(combinedRating);
+            double combinedRating = rescale(combined.DifficultyValue());
+            double starRating = escale(combinedRating);
 
             // These have to be read after combined.DifficultyValue() is set
             double patternRating = combined.PatternStat;
@@ -133,6 +133,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (sr < 0) return sr;
 
             return 10.43 * Math.Log(sr / 8 + 1);
+        }
+
+        private double Curve(double combined)
+        {
+            return 11.5 * Math.Sinh(1.0 / 16.0 * combined);
+        }
+
+        private double escale(double combined)
+        {
+            return Math.Floor((1.0 / 2.6) * (Curve(2 * combined) + Curve(combined)) * 10.0) / 10.0;
         }
     }
 }
