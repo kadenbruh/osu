@@ -104,8 +104,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (estimatedUr == null)
                 return 0;
 
-            Console.WriteLine(readingMultiplier);
-
             return difficultyValue * Math.Pow(SpecialFunctions.Erf(400 / (Math.Sqrt(2) * estimatedUr.Value)), 2.0);
         }
 

@@ -146,7 +146,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// <param name="combinedRating">The raw peaks skill rating before re-scaling.</param>
         private double spreadScaling(double combinedRating)
         {
-            return Math.Floor((1.0 / 2.6) * (sineCurve(2 * combinedRating) + sineCurve(combinedRating)) * 10.0) / 10.0;
+            return Math.Floor((1.0 / 2.6) * (sineCurve(2 * combinedRating) + sineCurve(combinedRating)) * 100.0) / 100.0;
         }
     }
 }
