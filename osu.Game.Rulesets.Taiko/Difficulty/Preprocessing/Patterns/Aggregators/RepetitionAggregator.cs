@@ -16,7 +16,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
             where InType : class, IHasInterval, IRepeatable<InType>
             where OutType : DifficultyPattern<InType>, new()
         {
-            List<OutType> result = new();
+            List<OutType> result = new List<OutType>();
             OutType? currentGroup = null;
             InType? previous = null;
 

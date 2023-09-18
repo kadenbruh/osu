@@ -12,11 +12,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
     /// </summary>
     public class RhythmAggregator
     {
-        public double MarginOfError;
+        private readonly double marginOfError;
 
         public RhythmAggregator(double marginOfError = 3)
         {
-            MarginOfError = marginOfError;
+            this.marginOfError = marginOfError;
         }
 
         private bool isFlat(IHasInterval current, IHasInterval previous, double marginOfError)
@@ -80,7 +80,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
             for (int i = 0; i < input.Count;)
             {
                 OutType? previous = result.Count > 0 ? result[^1] : null;
-                result.Add(nextGroup(previous, input, ref i, MarginOfError));
+                result.Add(nextGroup(previous, input, ref i, marginOfError));
             }
 
             return result;

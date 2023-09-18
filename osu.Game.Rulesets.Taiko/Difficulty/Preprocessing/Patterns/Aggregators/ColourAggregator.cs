@@ -11,7 +11,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
     /// </summary>
     public class ColourAggregator
     {
-        public List<MonoPattern> Group(List<TaikoDifficultyHitObject> input)
+        public static List<MonoPattern> Group(List<TaikoDifficultyHitObject> input)
         {
             List<MonoPattern> result = new List<MonoPattern>();
             MonoPattern? currentPattern = null;

@@ -6,7 +6,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
     /// <summary>
     /// A pattern that can be repeated
     /// </summary>
-    public interface IRepeatable<OtherType>
+    public interface IRepeatable<in OtherType>
     {
         public bool IsRepetitionOf(OtherType other);
     }

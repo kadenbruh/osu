@@ -13,7 +13,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
     /// Should be deleted unless a use for it is found.
     public class StreamAggregator
     {
-        private double hitWindow;
+        private readonly double hitWindow;
 
         public StreamAggregator(double hitWindow)
         {
@@ -22,17 +22,17 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns.Aggregators
 
         public List<DifficultyPattern> Aggregate(List<TaikoDifficultyHitObject> data)
         {
-            List<DifficultyPattern> result = new();
+            List<DifficultyPattern> result = new List<DifficultyPattern>();
 
             TaikoDifficultyHitObject? previous = null;
-            DifficultyPattern currentStream = new();
+            DifficultyPattern currentStream = new DifficultyPattern();
             result.Add(currentStream);
 
             foreach (TaikoDifficultyHitObject current in data)
             {
                 if (previous != null && current.StartTime - previous.StartTime > hitWindow)
                 {
-                    currentStream = new();
+                    currentStream = new DifficultyPattern();
                     result.Add(currentStream);
                 }
 
