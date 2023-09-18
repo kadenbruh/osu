@@ -10,6 +10,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
     {
         double StartTime { get; }
 
+        double EndTime { get; }
+
         double Interval { get; }
     }
 }

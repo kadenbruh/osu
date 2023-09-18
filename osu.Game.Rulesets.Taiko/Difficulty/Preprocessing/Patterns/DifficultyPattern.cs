@@ -27,14 +27,19 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
         public double StartTime => Children[0].StartTime;
 
         /// <summary>
-        /// The interval between <see cref="StartTime" /> of this and the previous <see cref="DifficultyPattern{ChildrenType}"/>.
+        /// The end time of the last <see cref="DifficultyPattern{ChildrenType}.Children"/> in this <see cref="DifficultyPattern{ChildrenType}"/>.
         /// </summary>
-        public double Interval => Previous != null ? StartTime - Previous.StartTime : double.NaN;
+        public double EndTime => Children[^1].EndTime;
+
+        /// <summary>
+        /// The interval between <see cref="StartTime" /> of this and <see cref="EndTime" /> of the previous <see cref="DifficultyPattern{ChildrenType}"/>.
+        /// </summary>
+        public double Interval => Previous != null ? StartTime - Previous.EndTime : double.NaN;
 
         /// <summary>
         /// The duration of this <see cref="DifficultyPattern{ChildrenType}"/>.
         /// </summary>
-        public double Duration => Children[^1].StartTime - StartTime;
+        public double Duration => EndTime - StartTime;
     }
 
     /// <summary>

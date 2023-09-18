@@ -48,6 +48,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
 
         double IHasInterval.StartTime => StartTime;
 
+        double IHasInterval.EndTime => EndTime;
+
         /// <summary>
         /// Creates a new difficulty hit object.
         /// </summary>
