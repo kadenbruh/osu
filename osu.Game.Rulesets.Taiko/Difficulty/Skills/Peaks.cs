@@ -33,10 +33,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
         int IComparable<TaikoStrain>.CompareTo(TaikoStrain? other)
         {
-            if (other == null)
-                return 1;
-
-            return Combined.CompareTo(other.Combined);
+            return other == null ? 1 : Combined.CompareTo(other.Combined);
         }
     }
 

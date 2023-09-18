@@ -42,7 +42,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         /// </summary>
         public readonly TaikoDifficultyHitObjectColour Colour;
 
-        public readonly TaikoPattern Pattern = new();
+        public readonly TaikoPattern Pattern = new TaikoPattern();
 
         public double Interval => DeltaTime;
 
