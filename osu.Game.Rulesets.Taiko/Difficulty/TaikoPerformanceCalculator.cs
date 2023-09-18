@@ -40,7 +40,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             countOk = score.Statistics.GetValueOrDefault(HitResult.Ok);
             countMeh = score.Statistics.GetValueOrDefault(HitResult.Meh);
             countMiss = score.Statistics.GetValueOrDefault(HitResult.Miss);
-            estimatedUr = computeEstimatedUr(score, taikoAttributes);
+            estimatedUr = computeEstimatedUr(taikoAttributes);
 
             // The effectiveMissCount is calculated by gaining a ratio for totalSuccessfulHits and increasing the miss penalty for shorter object counts lower than 1000.
             if (totalSuccessfulHits > 0)
@@ -124,7 +124,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// Calculates the tap deviation for a player using the OD, object count, and scores of 300s, 100s, and misses, with an assumed mean hit error of 0.
         /// Consistency is ensured as identical SS scores on the same map and settings yield the same deviation.
         /// </summary>
-        private double? computeEstimatedUr(ScoreInfo score, TaikoDifficultyAttributes attributes)
+        private double? computeEstimatedUr(TaikoDifficultyAttributes attributes)
         {
             if (totalSuccessfulHits == 0 || attributes.GreatHitWindow <= 0)
                 return null;
