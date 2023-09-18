@@ -60,7 +60,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         }
 
         private double childrenIntervalPenalty<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
-        where InnerChildrenType : IHasInterval
+            where InnerChildrenType : IHasInterval
         {
             double? previousInterval = pattern.Previous?.Interval;
 
@@ -78,14 +78,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         }
 
         private double burstPenalty<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
-        where InnerChildrenType : IHasInterval
+            where InnerChildrenType : IHasInterval
         {
             // Penalize patterns that can be hit within a single hit window.
             return MathEvaluator.Sigmoid(pattern.Duration / hitWindow, 1, 0.5, 0.5, 1);
         }
 
         private double childrenIntervalRatio<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
-        where InnerChildrenType : IHasInterval
+            where InnerChildrenType : IHasInterval
         {
             FlatRhythm<InnerChildrenType>? previous = pattern.Previous as FlatRhythm<InnerChildrenType>;
             double childrenInterval = pattern.ChildrenInterval;
@@ -100,7 +100,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         }
 
         private double intervalRatio<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
-        where InnerChildrenType : IHasInterval
+            where InnerChildrenType : IHasInterval
         {
             FlatRhythm<InnerChildrenType>? previous = pattern.Previous as FlatRhythm<InnerChildrenType>;
             double interval = pattern.Interval;
@@ -115,7 +115,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         }
 
         public double Evaluate<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
-        where InnerChildrenType : IHasInterval
+            where InnerChildrenType : IHasInterval
         {
             double childrenIntervalRatio = this.childrenIntervalRatio(pattern);
             double intervalRatio = this.intervalRatio(pattern);
@@ -143,7 +143,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             int patternCount = 0;
             MonoPattern? current = monoPattern;
 
-            while (current != null && (noteCount == 0 || noteCount % 2 == 0))
+            while (current != null && (noteCount == 0 || noteCount % 2 != 0))
             {
                 patternCount += 1;
 
@@ -165,6 +165,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             double total = 0;
 
             var pattern = hitObject.Pattern;
+
             if (pattern.FlatRhythmPattern != null)
             {
                 total += 0.25 * Evaluate(pattern.FlatRhythmPattern);
