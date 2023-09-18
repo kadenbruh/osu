@@ -10,7 +10,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
     /// consecutive objects.
     /// </summary>
     public abstract class DifficultyPattern<ChildrenType> : IHasInterval
-    where ChildrenType : IHasInterval
+        where ChildrenType : IHasInterval
     {
         /// <summary>
         /// The previous <see cref="DifficultyPattern{ChildrenType}"/>  />.

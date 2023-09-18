@@ -9,14 +9,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
     /// A higher order <see cref="FlatRhythm{IHasInterval}"/>, where each child are themselves <see cref="DifficultyPattern{IHasInterval}"/>s.
     /// </summary>
     public class FlatRhythmPattern<ChildrenType, InnerChildrenType> : FlatRhythm<ChildrenType>
-    where ChildrenType : DifficultyPattern<InnerChildrenType>
-    where InnerChildrenType : IHasInterval
+        where ChildrenType : DifficultyPattern<InnerChildrenType>
+        where InnerChildrenType : IHasInterval
     {
         public override TaikoDifficultyHitObject FirstHitObject => Children[0].FirstHitObject;
     }
 
     /// Below are explicitly declared classes to avoid having long nested generic types.
-
     /// <summary>
     /// The result of aggregating <see cref="FlatRhythmHitObjects" /> by another run of <see cref="RhythmAggregator"/>.
     /// </summary>
