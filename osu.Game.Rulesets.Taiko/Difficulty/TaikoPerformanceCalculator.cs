@@ -17,8 +17,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     public class TaikoPerformanceCalculator : PerformanceCalculator
     {
         // The estimate ratio of pattern difficulty to peak difficulty, assuming all skills having an even contribution.
-        // This is estimated by taking sqrt(0.33^2 + 0.33^2) / sqrt(0.33^2 + 0.33^2 + 0.42^2)
-        private const double pattern_ratio = 0.87622629032;
+        private double patternRatio;
 
         private int countGreat;
         private int countOk;
@@ -49,8 +48,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             double multiplier = 1.13;
 
+            // StaminaMultiplier, ColourMultiplier, PatternMultiplier
+            patternRatio = Math.Sqrt(Math.Pow(0.45, 2) + Math.Pow(0.20, 2)
+                / Math.Sqrt(Math.Pow(0.45, 2) + Math.Pow(0.20, 2) + Math.Pow(0.55, 2)));
+
             double patternDifficulty = taikoAttributes.PatternDifficulty;
-            double readingMultiplier = MathEvaluator.Sigmoid(patternDifficulty / taikoAttributes.PeakDifficulty / pattern_ratio,
+            double readingMultiplier = MathEvaluator.Sigmoid(patternDifficulty / taikoAttributes.PeakDifficulty / patternRatio,
                 0.55, 0.4, 0.5, 1.0);
 
             if (score.Mods.Any(m => m is ModHidden))
@@ -77,7 +80,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             };
         }
 
-        private double computeDifficultyValue(ScoreInfo score, TaikoDifficultyAttributes attributes, double readingMultiplier)
+        private double computeDifficultyValue(ScoreInfo score, DifficultyAttributes attributes, double readingMultiplier)
         {
             double difficultyValue = Math.Pow(5 * Math.Max(1.0, attributes.StarRating / 0.115) - 4.0, 2.25) / 1150.0;
 
