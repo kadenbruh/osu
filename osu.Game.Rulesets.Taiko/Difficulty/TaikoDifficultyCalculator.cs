@@ -86,8 +86,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             var combined = (Peaks)skills[0];
 
-            double combinedRating = rescale(combined.DifficultyValue());
-            double starRating = escale(combinedRating);
+            double combinedRating = logScale(combined.DifficultyValue());
+            double starRating = spreadScaling(combinedRating);
 
             // These have to be read after combined.DifficultyValue() is set
             double patternRating = combined.PatternStat;
@@ -127,22 +127,26 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// <summary>
         /// Applies a final re-scaling of the star rating.
         /// </summary>
-        /// <param name="sr">The raw star rating value before re-scaling.</param>
-        private double rescale(double sr)
+        /// <param name="combinedRating">The raw peaks skill rating before re-scaling.</param>
+        private double logScale(double combinedRating)
         {
-            if (sr < 0) return sr;
+            if (combinedRating < 0) return combinedRating;
 
-            return 10.43 * Math.Log(sr / 8 + 1);
+            return 10.43 * Math.Log(combinedRating / 8 + 1);
         }
 
-        private double Curve(double combined)
+        private double sineCurve(double combinedRating)
         {
-            return 11.5 * Math.Sinh(1.0 / 16.0 * combined);
+            return 11.5 * Math.Sinh(1.0 / 16.0 * combinedRating);
         }
 
-        private double escale(double combined)
+        /// <summary>
+        /// Applies a final re-scaling of the star rating.
+        /// </summary>
+        /// <param name="combinedRating">The raw peaks skill rating before re-scaling.</param>
+        private double spreadScaling(double combinedRating)
         {
-            return Math.Floor((1.0 / 2.6) * (Curve(2 * combined) + Curve(combined)) * 10.0) / 10.0;
+            return Math.Floor((1.0 / 2.6) * (sineCurve(2 * combinedRating) + sineCurve(combinedRating)) * 10.0) / 10.0;
         }
     }
 }
