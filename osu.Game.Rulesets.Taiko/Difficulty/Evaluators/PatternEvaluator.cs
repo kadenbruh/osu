@@ -42,7 +42,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
 
             for (int i = 1; i <= terms; ++i)
             {
-                difficulty += termPenalty(ratio, i, 2, 1);
+                // todo: modify termPenalty to make the transition a bit cleaner than with this max
+                difficulty += Math.Max(termPenalty(ratio, i, 2, 1.1), -1);
             }
 
             difficulty += terms;
