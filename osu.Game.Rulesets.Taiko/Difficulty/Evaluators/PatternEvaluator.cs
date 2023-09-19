@@ -178,22 +178,17 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
 
             if (pattern.ThirdPassRhythmPattern != null)
             {
-                total += Evaluate(pattern.ThirdPassRhythmPattern);
+                total += 1.0 * Evaluate(pattern.ThirdPassRhythmPattern);
             }
 
             if (pattern.MonoPattern != null && pattern.FlatRhythmPattern == null)
             {
-                total += 0.2d * patternsToEven(pattern.MonoPattern);
+                total += 0.2 * patternsToEven(pattern.MonoPattern);
             }
 
             if (pattern.SecondPassColourPattern != null)
             {
                 total += 0.5 * Evaluate(pattern.SecondPassColourPattern);
-            }
-
-            if (pattern.ThirdPassRhythmPattern != null)
-            {
-                total += Evaluate(pattern.ThirdPassRhythmPattern);
             }
 
             return total;
