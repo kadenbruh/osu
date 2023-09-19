@@ -117,6 +117,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         public double Evaluate<InnerChildrenType>(FlatRhythm<InnerChildrenType> pattern)
             where InnerChildrenType : IHasInterval
         {
+            if (double.IsNaN(pattern.Interval))
+                return 0;
+
             double childrenIntervalRatio = this.childrenIntervalRatio(pattern);
             double intervalRatio = this.intervalRatio(pattern);
 
@@ -126,7 +129,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             childrenIntervalStrain *= childrenIntervalPenalty(pattern);
             childrenIntervalStrain *= burstPenalty(pattern);
 
-            return ratioDifficulty(intervalStrain + childrenIntervalStrain);
+            double intervalLengthMultiplier = MathEvaluator.InvertedSigmoid(pattern.Interval, 300, 50, 0.5, 1);
+
+            return ratioDifficulty(intervalStrain + childrenIntervalStrain) * intervalLengthMultiplier;
         }
 
         /// <summary>
