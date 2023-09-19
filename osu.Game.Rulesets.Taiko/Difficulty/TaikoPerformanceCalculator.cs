@@ -49,8 +49,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double multiplier = 1.13;
 
             // StaminaMultiplier, ColourMultiplier, PatternMultiplier
-            patternRatio = Math.Sqrt(Math.Pow(0.325, 2) + Math.Pow(0.30, 2)
-                / Math.Sqrt(Math.Pow(0.325, 2) + Math.Pow(0.30, 2) + Math.Pow(1.15, 2)));
+            patternRatio = Math.Sqrt(Math.Pow(0.35, 2) + Math.Pow(0.275, 2)
+                / Math.Sqrt(Math.Pow(0.35, 2) + Math.Pow(0.275, 2) + Math.Pow(0.6, 2)));
 
             double patternDifficulty = taikoAttributes.PatternDifficulty;
             double readingMultiplier = MathEvaluator.Sigmoid(patternDifficulty / taikoAttributes.PeakDifficulty / patternRatio,
