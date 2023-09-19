@@ -48,7 +48,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
             List<MonoPattern> flatMonoPatterns = new List<MonoPattern>();
             flatRhythmPatterns.ForEach(item =>
             {
-                List<MonoPattern> grouped = ColourAggregator.Group(item.Children);
+                List<MonoPattern> grouped = colourAggregator.Group(item.Children);
                 // Link cross-rhythm patterns together
                 // This is so that a new flat rhythm pattern doesn't always create a new colourPattern
                 if (flatMonoPatterns.Count > 0)
@@ -86,7 +86,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Patterns
             //     item.FirstHitObject.Pattern.ColourSequence = item;
             // }
 
-            List<MonoPattern> untimedMonos = ColourAggregator.Group(hitObjects);
+            List<MonoPattern> untimedMonos = colourAggregator.Group(hitObjects);
             List<ColourSequence> colourSequences = repetitionAggregator.Group<MonoPattern, ColourSequence>(untimedMonos);
             foreach (var item in colourSequences)
             {
