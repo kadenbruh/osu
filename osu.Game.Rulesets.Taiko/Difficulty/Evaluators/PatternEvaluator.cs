@@ -130,9 +130,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             childrenIntervalStrain *= childrenIntervalPenalty(pattern);
             childrenIntervalStrain *= burstPenalty(pattern);
 
-            double intervalLengthMultiplier = MathEvaluator.InvertedSigmoid(pattern.Interval, 300, 50, 0.5, 1);
+            double speedMultiplier = MathEvaluator.InvertedSigmoid(pattern.Interval, 200, 200, 1, 1.75);
 
-            return ratioDifficulty(intervalStrain + childrenIntervalStrain) * intervalLengthMultiplier;
+            return ratioDifficulty(intervalStrain + childrenIntervalStrain) * speedMultiplier;
         }
 
         /// <summary>
