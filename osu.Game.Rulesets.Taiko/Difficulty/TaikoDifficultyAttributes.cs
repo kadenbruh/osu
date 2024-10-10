@@ -17,16 +17,22 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double StaminaDifficulty { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the rhythm skill.
+        /// The difficulty corresponding to the pattern skill.
         /// </summary>
-        [JsonProperty("rhythm_difficulty")]
-        public double RhythmDifficulty { get; set; }
+        [JsonProperty("pattern_difficulty")]
+        public double PatternDifficulty { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the colour skill.
         /// </summary>
         [JsonProperty("colour_difficulty")]
         public double ColourDifficulty { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the rhythm skill.
+        /// </summary>
+        [JsonProperty("rhythm_difficulty")]
+        public double RhythmDifficulty { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.
@@ -59,7 +65,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             yield return (ATTRIB_ID_DIFFICULTY, StarRating);
             yield return (ATTRIB_ID_GREAT_HIT_WINDOW, GreatHitWindow);
-            yield return (ATTRIB_ID_OK_HIT_WINDOW, OkHitWindow);
         }
 
         public override void FromDatabaseAttributes(IReadOnlyDictionary<int, double> values, IBeatmapOnlineInfo onlineInfo)
@@ -68,7 +73,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             StarRating = values[ATTRIB_ID_DIFFICULTY];
             GreatHitWindow = values[ATTRIB_ID_GREAT_HIT_WINDOW];
-            OkHitWindow = values[ATTRIB_ID_OK_HIT_WINDOW];
         }
     }
 }
