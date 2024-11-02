@@ -23,6 +23,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double MonoStaminaFactor { get; set; }
 
         /// <summary>
+        /// hi
+        /// </summary>
+        [JsonProperty("simple_rhythm_penalty")]
+        public double SimpleRhythmPenalty { get; set; }
+
+        /// <summary>
         /// The difficulty corresponding to the rhythm skill.
         /// </summary>
         [JsonProperty("rhythm_difficulty")]

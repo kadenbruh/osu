@@ -25,6 +25,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double colour_skill_multiplier = 0.375 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
+        private double simpleRhythmPenalty = 1;
+
         public override int Version => 20241007;
 
         public TaikoDifficultyCalculator(IRulesetInfo ruleset, IWorkingBeatmap beatmap)
@@ -87,6 +89,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double staminaRating = stamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
 
+            double maxColour = rhythmRating * 2;
+            simpleRhythmPenalty = 1 + Math.Min(maxColour, Math.Log(Math.Max(1, colourRating - maxColour)) + maxColour);
+
             double monoStaminaFactor = Math.Pow(monoStaminaRating / staminaRating, 5);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
@@ -101,6 +106,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 Mods = mods,
                 StaminaDifficulty = staminaRating,
                 MonoStaminaFactor = monoStaminaFactor,
+                SimpleRhythmPenalty = simpleRhythmPenalty,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
                 PeakDifficulty = combinedRating,
@@ -173,3 +179,4 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private double norm(double p, params double[] values) => Math.Pow(values.Sum(x => Math.Pow(x, p)), 1 / p);
     }
 }
+
