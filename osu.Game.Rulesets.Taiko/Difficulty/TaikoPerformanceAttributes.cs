@@ -9,8 +9,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 {
     public class TaikoPerformanceAttributes : PerformanceAttributes
     {
-        [JsonProperty("difficulty")]
+        [JsonProperty("total_difficulty")]
         public double Difficulty { get; set; }
+
+        [JsonProperty("colour_difficulty")]
+        public double ColourDifficulty { get; set; }
+
+        [JsonProperty("rhythm_difficulty")]
+        public double RhythmDifficulty { get; set; }
 
         [JsonProperty("accuracy")]
         public double Accuracy { get; set; }

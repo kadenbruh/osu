@@ -23,6 +23,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         private double effectiveMissCount;
 
+        private double ColourDifficulty;
+        private double RhythmDifficulty;
+
         public TaikoPerformanceCalculator()
             : base(new TaikoRuleset())
         {
@@ -37,6 +40,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             countMeh = score.Statistics.GetValueOrDefault(HitResult.Meh);
             countMiss = score.Statistics.GetValueOrDefault(HitResult.Miss);
             estimatedUnstableRate = computeDeviationUpperBound(taikoAttributes) * 10;
+
+            ColourDifficulty = taikoAttributes.ColourDifficulty;
+            RhythmDifficulty = taikoAttributes.RhythmDifficulty;
 
             // The effectiveMissCount is calculated by gaining a ratio for totalSuccessfulHits and increasing the miss penalty for shorter object counts lower than 1000.
             if (totalSuccessfulHits > 0)
@@ -64,6 +70,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             return new TaikoPerformanceAttributes
             {
                 Difficulty = difficultyValue,
+                ColourDifficulty = ColourDifficulty,
+                RhythmDifficulty = RhythmDifficulty,
                 Accuracy = accuracyValue,
                 EffectiveMissCount = effectiveMissCount,
                 EstimatedUnstableRate = estimatedUnstableRate,
