@@ -45,7 +45,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             // Converts are detected and omitted from mod-specific bonuses due to the scope of current difficulty calcuation.
             bool isConvert = score.BeatmapInfo!.Ruleset.OnlineID != 1;
 
-            double multiplier = 1.13;
+            double multiplier = 1.25;
 
             if (score.Mods.Any(m => m is ModHidden) && !isConvert)
                 multiplier *= 1.075;
