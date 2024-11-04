@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double difficulty_multiplier = 0.084375;
         private const double rhythm_skill_multiplier = 0.2 * difficulty_multiplier;
         private const double colour_skill_multiplier = 0.375 * difficulty_multiplier;
-        private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
+        private const double stamina_skill_multiplier = 0.380 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
 
@@ -152,7 +152,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             for (int i = 0; i < colourPeaks.Count; i++)
             {
                 double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
-                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 30);
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 20);
                 double rhythmPeak = rhythmPeaks[i] * 0.03;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
