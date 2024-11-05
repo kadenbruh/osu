@@ -100,7 +100,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaFactor = Math.Pow(monoStaminaRating / staminaRating, 5);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
-            double starRating = rescale(combinedRating * 1.4);
+            double starRating = rescale(combinedRating * 1.6);
 
             HitWindows hitWindows = new TaikoHitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
@@ -153,7 +153,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 20);
-                double rhythmPeak = rhythmPeaks[i] * 0.03;
+                double rhythmPeak = rhythmPeaks[i] * 0.02;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
@@ -166,12 +166,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             }
 
             double difficulty = 0;
-            double weight = 1;
+            double weight = 1.0;
+            double decayRate = 0.12; // Adjust this to control decay rate
+
+            int n = 0;
 
             foreach (double strain in peaks.OrderDescending())
             {
                 difficulty += strain * weight;
-                weight *= 0.9;
+                weight = Math.Exp(-decayRate * ++n); // Exponential decay
             }
 
             return difficulty;
