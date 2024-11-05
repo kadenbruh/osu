@@ -162,7 +162,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 20);
-                double rhythmPeak = rhythmPeaks[i] * 0.02;
+                double rhythmPeak = rhythmPeaks[i] * 0.025;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
