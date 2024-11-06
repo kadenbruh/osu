@@ -111,6 +111,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                     starRating *= 0.90;
             }
 
+            // TODO: This is aether ritual. It breaks things.
+            if (beatmap.BeatmapInfo.OnlineID == 1939224)
+            {
+                starRating *= 0.90;
+            }
+
             HitWindows hitWindows = new TaikoHitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
 
