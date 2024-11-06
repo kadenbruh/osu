@@ -134,7 +134,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         /// Calculates a single rhythm repetition penalty.
         /// </summary>
         /// <param name="notesSince">Number of notes since the last repetition of a rhythm change.</param>
-        private static double repetitionPenalty(int notesSince) => Math.Min(1.0, 0.032 * notesSince);
+        private static double repetitionPenalty(int notesSince) => Math.Min(1.0, 0.025 * notesSince);
 
         /// <summary>
         /// Calculates a penalty based on the number of notes since the last rhythm change.
