@@ -100,7 +100,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
-            double starRating = rescale(combinedRating * 1.4);
+            double starRating = rescale(combinedRating * 1.53);
 
             // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
             if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
@@ -162,7 +162,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 17);
-                double rhythmPeak = rhythmPeaks[i] * 0.032; // needs to be separate from rhythmRating
+                double rhythmPeak = rhythmPeaks[i] * 0.036; // needs to be separate from rhythmRating
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
