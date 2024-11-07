@@ -83,7 +83,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             Stamina singleColourStamina = (Stamina)skills.Last(x => x is Stamina);
 
             double colourDifficultyStrainCount = colour.CountTopWeightedStrains() / 10;
-            double rhythmDifficultyStrainCount = rhythm.CountTopWeightedStrains() / 10;
+            double rhythmDifficultyStrainCount = rhythm.CountTopWeightedStrains(); // Rhythm uses strain differently, thus doesn't need a penalty to be in line.
             double staminaDifficultyStrainCount = stamina.CountTopWeightedStrains() / 10;
 
             double colourRating = colour.DifficultyValue() * colour_skill_multiplier;
