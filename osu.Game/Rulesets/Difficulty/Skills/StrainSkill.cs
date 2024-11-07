@@ -75,6 +75,7 @@ namespace osu.Game.Rulesets.Difficulty.Skills
 
             double consistentTopStrain = DifficultyValue() / 10; // What would the top strain be if all strain values were identical
             // Use a weighted sum of all strains. Constants are arbitrary and give nice values
+            Console.WriteLine(consistentTopStrain);
             return ObjectStrains.Sum(s => 1.1 / (1 + Math.Exp(-10 * (s / consistentTopStrain - 0.88))));
         }
 

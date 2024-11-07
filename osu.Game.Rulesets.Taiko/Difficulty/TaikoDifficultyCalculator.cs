@@ -82,6 +82,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             Stamina stamina = (Stamina)skills.First(x => x is Stamina);
             Stamina singleColourStamina = (Stamina)skills.Last(x => x is Stamina);
 
+            double colourDifficultyStrainCount = colour.CountDifficultStrains();
+            double rhythmDifficultyStrainCount = rhythm.CountDifficultStrains();
+            double staminaDifficultyStrainCount = stamina.CountDifficultStrains();
+
             double colourRating = colour.DifficultyValue() * colour_skill_multiplier;
             double rhythmRating = rhythm.DifficultyValue() * rhythm_skill_multiplier;
             double staminaRating = stamina.DifficultyValue() * stamina_skill_multiplier;
@@ -112,6 +116,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
                 PeakDifficulty = combinedRating,
+                ColourDifficultyStrainCount = colourDifficultyStrainCount,
+                RhythmDifficultyStrainCount = rhythmDifficultyStrainCount,
+                StaminaDifficultyStrainCount = staminaDifficultyStrainCount,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
                 MaxCombo = beatmap.GetMaxCombo(),

@@ -35,6 +35,25 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double ColourDifficulty { get; set; }
 
         /// <summary>
+        /// The difficulty corresponding to the colour skill.
+        /// </summary>
+        [JsonProperty("colour_difficult_strains")]
+        public double ColourDifficultyStrainCount { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the colour skill.
+        /// </summary>
+        [JsonProperty("rhythm_difficult_strains")]
+        public double RhythmDifficultyStrainCount { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the colour skill.
+        /// </summary>
+        [JsonProperty("stamina_difficult_strains")]
+        public double StaminaDifficultyStrainCount { get; set; }
+
+
+        /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.
         /// </summary>
         [JsonProperty("peak_difficulty")]
