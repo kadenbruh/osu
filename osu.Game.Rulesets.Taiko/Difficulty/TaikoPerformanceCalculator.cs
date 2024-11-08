@@ -41,7 +41,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             // The effectiveMissCount is calculated by gaining a ratio for totalSuccessfulHits and increasing the miss penalty for shorter object counts lower than 1000.
             if (totalSuccessfulHits > 0)
                 effectiveMissCount = Math.Max(1.0, 1000.0 / totalSuccessfulHits) * countMiss;
-
             // Converts are detected and omitted from mod-specific bonuses due to the scope of current difficulty calculation.
             bool isConvert = score.BeatmapInfo!.Ruleset.OnlineID != 1;
 
@@ -55,6 +54,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             double difficultyValue = computeDifficultyValue(score, taikoAttributes);
             double accuracyValue = computeAccuracyValue(score, taikoAttributes, isConvert);
+            double readingValue = computeReadingValue(score, taikoAttributes);
             double totalValue =
                 Math.Pow(
                     Math.Pow(difficultyValue, 1.1) +
@@ -65,6 +65,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 Difficulty = difficultyValue,
                 Accuracy = accuracyValue,
+                Reading = readingValue,
                 EffectiveMissCount = effectiveMissCount,
                 EstimatedUnstableRate = estimatedUnstableRate,
                 Total = totalValue
@@ -97,6 +98,20 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double accScalingShift = 300 - 100 * attributes.MonoStaminaFactor;
 
             return difficultyValue * Math.Pow(SpecialFunctions.Erf(accScalingShift / (Math.Sqrt(2) * estimatedUnstableRate.Value)), accScalingExponent);
+        }
+
+        private double computeReadingValue(ScoreInfo score, TaikoDifficultyAttributes attributes)
+        {
+            double objectDensity = attributes.ObjectDensity;
+            double readingValue = Math.Pow(Math.Sqrt(objectDensity), 1.5);
+
+            if (score.Mods.Any(m => m is ModEasy))
+                readingValue *= 0.5;
+
+            if (score.Mods.Any(m => m is ModHardRock))
+                readingValue *= 2;
+
+            return readingValue;
         }
 
         private double computeAccuracyValue(ScoreInfo score, TaikoDifficultyAttributes attributes, bool isConvert)
