@@ -162,12 +162,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             }
 
             double difficulty = 0;
-            double weight = 1;
+            double weight = 1.0;
+            double decayRate = 0.105; // Adjust this to control decay rate
+
+            int n = 0;
 
             foreach (double strain in peaks.OrderDescending())
             {
                 difficulty += strain * weight;
-                weight *= 0.9;
+                weight = Math.Exp(-decayRate * ++n); // Exponential decay
             }
 
             return difficulty;
