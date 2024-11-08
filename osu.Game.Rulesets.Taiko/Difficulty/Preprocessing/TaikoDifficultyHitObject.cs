@@ -25,6 +25,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         /// Effective BPM of the object, required for reading difficulty calculation
         public double EffectiveBPM;
 
+        // Slider Velocity of the object
         public double CurrentSliderVelocity;
 
         /// <summary>
