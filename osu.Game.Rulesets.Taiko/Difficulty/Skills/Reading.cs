@@ -65,11 +65,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         private double calculateObjectDensity(double deltaTime, double effectiveBPM)
         {
             // The maximum and minimum center value for density.
-            const double density_max = 150;
+            const double density_max = 300;
             const double density_min = 50;
 
             const double center = 200;
-            const double range = 300;
+            const double range = 2000;
 
             // Adjusts the penalty for low SV based on object density.
             return density_max - (density_max - density_min) *
