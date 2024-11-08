@@ -5,6 +5,8 @@ using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
+using osu.Game.Rulesets.Taiko.Objects;
+
 namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
     public class Reading : StrainDecaySkill
@@ -39,8 +41,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         {
             TaikoDifficultyHitObject noteObject = (TaikoDifficultyHitObject)current;
 
+            if (noteObject.BaseObject is Swell || noteObject.BaseObject is DrumRoll)
+            {
+                return 1;
+            }
+
+            // Only return a difficulty value when the Object isn't a Spinner or a Slider.
             double sliderVelocityBonus = calculateHighVelocityBonus(noteObject.EffectiveBPM);
-            ObjectDensity = calculateObjectDensity(current.DeltaTime, noteObject.EffectiveBPM, noteObject.CurrentSliderVelocity);
+            ObjectDensity = calculateObjectDensity(noteObject.DeltaTime, noteObject.EffectiveBPM, noteObject.CurrentSliderVelocity);
 
             return high_sv_multiplier * sliderVelocityBonus;
         }
@@ -70,8 +78,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
             const double center = 200;
             const double range = 2000;
-
-            Console.WriteLine(currentSliderVelocity);
 
             // Adjusts the penalty for low SV based on object density.
             return density_max - (density_max - density_min) *
