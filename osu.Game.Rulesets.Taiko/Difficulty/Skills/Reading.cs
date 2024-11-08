@@ -14,7 +14,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
         private double currentStrain;
 
-        public static double ObjectDensity;
+        public double ObjectDensity;
 
         private const double high_sv_multiplier = 1.0;
 
@@ -37,10 +37,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 
         private double reading(DifficultyHitObject current)
         {
-            TaikoDifficultyHitObject hitObject = (TaikoDifficultyHitObject)current;
+            TaikoDifficultyHitObject noteObject = (TaikoDifficultyHitObject)current;
 
-            double sliderVelocityBonus = calculateHighVelocityBonus(hitObject.EffectiveBPM);
-            ObjectDensity = calculateObjectDensity(current.DeltaTime, hitObject.EffectiveBPM);
+            double sliderVelocityBonus = calculateHighVelocityBonus(noteObject.EffectiveBPM);
+            ObjectDensity = calculateObjectDensity(current.DeltaTime, noteObject.EffectiveBPM, noteObject.CurrentSliderVelocity);
 
             return high_sv_multiplier * sliderVelocityBonus;
         }
@@ -62,7 +62,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             return sigmoid(effectiveBPM, center, range);
         }
 
-        private double calculateObjectDensity(double deltaTime, double effectiveBPM)
+        private double calculateObjectDensity(double deltaTime, double effectiveBPM, double currentSliderVelocity)
         {
             // The maximum and minimum center value for density.
             const double density_max = 300;
@@ -71,9 +71,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             const double center = 200;
             const double range = 2000;
 
+            Console.WriteLine(currentSliderVelocity);
+
             // Adjusts the penalty for low SV based on object density.
             return density_max - (density_max - density_min) *
-                sigmoid(effectiveBPM - (deltaTime / 2), center, range);
+                sigmoid(deltaTime * currentSliderVelocity, center, range);
         }
 
         /// <summary>
