@@ -29,10 +29,34 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double RhythmDifficulty { get; set; }
 
         /// <summary>
+        /// The ratio of stamina difficulty from mono-color (single colour) streams to total stamina difficulty.
+        /// </summary>
+        [JsonProperty("simple_rhythm_factor")]
+        public double SimpleRhythmFactor { get; set; }
+
+        /// <summary>
         /// The difficulty corresponding to the colour skill.
         /// </summary>
         [JsonProperty("colour_difficulty")]
         public double ColourDifficulty { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the stamina skill.
+        /// </summary>
+        [JsonProperty("stamina_difficult_strain")]
+        public double StaminaDifficultStrain { get; set; }
+
+        /// <summary>
+        /// The ratio of stamina difficulty from mono-color (single colour) streams to total stamina difficulty.
+        /// </summary>
+        [JsonProperty("rhythm_difficult_strain")]
+        public double RhythmDifficultStrain { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the rhythm skill.
+        /// </summary>
+        [JsonProperty("colour_difficult_strain")]
+        public double ColourDifficultStrain { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.

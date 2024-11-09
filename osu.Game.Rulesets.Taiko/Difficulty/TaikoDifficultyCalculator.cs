@@ -25,6 +25,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double colour_skill_multiplier = 0.375 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
+        private double SimpleRhythmFactor;
+
         public override int Version => 20241007;
 
         public TaikoDifficultyCalculator(IRulesetInfo ruleset, IWorkingBeatmap beatmap)
@@ -85,6 +87,24 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double colourRating = colour.DifficultyValue() * colour_skill_multiplier;
             double rhythmRating = rhythm.DifficultyValue() * rhythm_skill_multiplier;
             double staminaRating = stamina.DifficultyValue() * stamina_skill_multiplier;
+
+            double colourDifficultStrain = colour.CountTopWeightedStrains();
+            double rhythmDifficultStrain = rhythm.CountTopWeightedStrains() * 10; // Rhythm is by nature lower, so we must increase it manually.
+            double staminaDifficultStrain = stamina.CountTopWeightedStrains();
+
+            // Calculate the stamina factor as a percentage of the sum of rhythm and colour
+            double totalValue = rhythmDifficultStrain + colourDifficultStrain + staminaDifficultStrain;
+            double staminaFactor = Math.Min(1, staminaDifficultStrain / totalValue); // Higher stamina reduces the penalty
+
+            const double threshold = 400; // Adjusted threshold to match realistic rhythmRating values
+            const double upperBound = threshold * 2; // Upper bound of the penalty
+
+            double colourPenalty = rhythmRating <= threshold
+                ? Math.Log(threshold / rhythmDifficultStrain) * Math.Min(upperBound, Math.Log(Math.Max(1, colourDifficultStrain - upperBound)) + upperBound) * staminaModifier
+                : 0;
+
+            SimpleRhythmFactor = Math.Max(0, colourPenalty);
+
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
@@ -110,7 +130,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 StaminaDifficulty = staminaRating,
                 MonoStaminaFactor = monoStaminaFactor,
                 RhythmDifficulty = rhythmRating,
+                SimpleRhythmFactor = SimpleRhythmFactor,
                 ColourDifficulty = colourRating,
+                StaminaDifficultStrain = staminaDifficultStrain,
+                ColourDifficultStrain = colourDifficultStrain,
+                RhythmDifficultStrain = rhythmDifficultStrain,
                 PeakDifficulty = combinedRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
@@ -148,7 +172,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
-                double colourPeak = colourPeaks[i] * colour_skill_multiplier;
+                double colourPeak = colourPeaks[i] * colour_skill_multiplier * Math.Exp(-SimpleRhythmFactor * 0.0005);
                 double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
