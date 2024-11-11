@@ -39,12 +39,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
                 rhythmFactor = Math.Clamp(rhythmFactor, 0.5, 3.0); // Prevent extreme scaling.
             }
 
-            Console.WriteLine($"Rhythm Factor: {rhythmFactor}"); // TODO
+            // Console.WriteLine($"Rhythm Factor: {rhythmFactor}"); // TODO
 
             // Combine the pattern complexity factor with the rhythm factor.
             double difficulty = patternComplexityFactor * rhythmFactor;
 
-            Console.WriteLine($"Final Difficulty: {difficulty}"); // TODO
+            // Console.WriteLine($"Final Difficulty: {difficulty}"); // TODO
 
             return difficulty;
         }
