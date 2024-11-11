@@ -24,6 +24,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double rhythm_skill_multiplier = 0.2 * difficulty_multiplier;
         private const double colour_skill_multiplier = 0.375 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
+        private const double pattern_skill_multiplier = 0.375 * difficulty_multiplier;
 
         public override int Version => 20241007;
 
@@ -39,7 +40,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 new Rhythm(mods),
                 new Colour(mods),
                 new Stamina(mods, false),
-                new Stamina(mods, true)
+                new Stamina(mods, true),
+                new Pattern(mods)
             };
         }
 
@@ -81,14 +83,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);
             Stamina stamina = (Stamina)skills.First(x => x is Stamina);
             Stamina singleColourStamina = (Stamina)skills.Last(x => x is Stamina);
+            Pattern pattern = (Pattern)skills.First(x => x is Pattern);
 
             double colourRating = colour.DifficultyValue() * colour_skill_multiplier;
             double rhythmRating = rhythm.DifficultyValue() * rhythm_skill_multiplier;
             double staminaRating = stamina.DifficultyValue() * stamina_skill_multiplier;
+            double patternRating = pattern.DifficultyValue() * rhythm_skill_multiplier;
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
+            double combinedRating = combinedDifficultyValue(rhythm, colour, stamina, pattern);
             double starRating = rescale(combinedRating * 1.4);
 
             // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
@@ -111,6 +115,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 MonoStaminaFactor = monoStaminaFactor,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
+                PatternDifficulty = patternRating,
                 PeakDifficulty = combinedRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
@@ -138,21 +143,23 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// For each section, the peak strains of all separate skills are combined into a single peak strain for the section.
         /// The resulting partial rating of the beatmap is a weighted sum of the combined peaks (higher peaks are weighted more).
         /// </remarks>
-        private double combinedDifficultyValue(Rhythm rhythm, Colour colour, Stamina stamina)
+        private double combinedDifficultyValue(Rhythm rhythm, Colour colour, Stamina stamina, Pattern pattern)
         {
             List<double> peaks = new List<double>();
 
             var colourPeaks = colour.GetCurrentStrainPeaks().ToList();
             var rhythmPeaks = rhythm.GetCurrentStrainPeaks().ToList();
             var staminaPeaks = stamina.GetCurrentStrainPeaks().ToList();
+            var patternPeaks = pattern.GetCurrentStrainPeaks().ToList();
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
                 double colourPeak = colourPeaks[i] * colour_skill_multiplier;
                 double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
-                double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
+                double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier; // original
+                double patternPeak = patternPeaks[i] * pattern_skill_multiplier;
 
-                double peak = norm(1.5, colourPeak, staminaPeak);
+                double peak = norm(1.5, colourPeak, staminaPeak, patternPeak);
                 peak = norm(2, peak, rhythmPeak);
 
                 // Sections with 0 strain are excluded to avoid worst-case time complexity of the following sort (e.g. /b/2351871).
