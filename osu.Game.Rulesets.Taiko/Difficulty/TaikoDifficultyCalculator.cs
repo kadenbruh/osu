@@ -26,6 +26,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
         private const double pattern_skill_multiplier = 0.375 * difficulty_multiplier;
 
+        private double simpleRhythmPenalty;
+
         public override int Version => 20241007;
 
         public TaikoDifficultyCalculator(IRulesetInfo ruleset, IWorkingBeatmap beatmap)
@@ -95,6 +97,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina, pattern);
             double starRating = rescale(combinedRating * 1.4);
 
+            const double threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies .
+            const double upper_bound = threshold * 2; // Upper bound of the Penalty.
+
+            // Only apply the penalty when rhythmRating is below the threshold
+            simpleRhythmPenalty = rhythmRating <= threshold
+                ? Math.Log(threshold / rhythmRating) * Math.Min(upper_bound, Math.Log(Math.Max(1, colourRating - upper_bound)) + upper_bound)
+                : 0;
+
             // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
             if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
             {
@@ -154,9 +164,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
-                double colourPeak = colourPeaks[i] * colour_skill_multiplier;
+                double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 10);
                 double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
-                double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier; // original
+                double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
                 double patternPeak = patternPeaks[i] * pattern_skill_multiplier;
 
                 double peak = norm(1.5, colourPeak, staminaPeak, patternPeak);
