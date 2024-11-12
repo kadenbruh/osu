@@ -94,9 +94,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            double combinedRating = combinedDifficultyValue(rhythm, colour, stamina, pattern);
-            double starRating = rescale(combinedRating * 1.4);
-
             const double threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies .
             const double upper_bound = threshold * 2; // Upper bound of the Penalty.
 
@@ -104,6 +101,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty = rhythmRating <= threshold
                 ? Math.Log(threshold / rhythmRating) * Math.Min(upper_bound, Math.Log(Math.Max(1, colourRating - upper_bound)) + upper_bound)
                 : 0;
+
+            double combinedRating = combinedDifficultyValue(rhythm, colour, stamina, pattern);
+            double starRating = rescale(combinedRating * 1.4);
 
             // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
             if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
