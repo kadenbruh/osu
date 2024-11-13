@@ -22,9 +22,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     {
         private const double difficulty_multiplier = 0.084375;
         private const double rhythm_skill_multiplier = 0.240 * difficulty_multiplier;
-        private const double colour_skill_multiplier = 0.20 * difficulty_multiplier;
+        private const double colour_skill_multiplier = 0.30 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
-        private const double pattern_skill_multiplier = 0.375 * difficulty_multiplier;
+        private const double pattern_skill_multiplier = 0.245 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
 
