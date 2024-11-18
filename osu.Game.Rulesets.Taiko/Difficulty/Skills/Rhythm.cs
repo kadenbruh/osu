@@ -5,6 +5,7 @@ using System;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Taiko.Difficulty.Evaluators;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Taiko.Objects;
 using osu.Game.Utils;
@@ -48,14 +49,17 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         /// </summary>
         private int notesSinceRhythmChange;
 
-        public Rhythm(Mod[] mods)
+        private readonly double greatHitWindow;
+
+        public Rhythm(Mod[] mods, double greatHitWindow)
             : base(mods)
         {
+            this.greatHitWindow = greatHitWindow;
         }
 
         protected override double StrainValueOf(DifficultyHitObject current)
         {
-            // drum rolls and swells are exempt.
+            // Drum rolls and swells are exempt.
             if (!(current.BaseObject is Hit))
             {
                 resetRhythmAndStrain();
@@ -67,19 +71,21 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             TaikoDifficultyHitObject hitObject = (TaikoDifficultyHitObject)current;
             notesSinceRhythmChange += 1;
 
-            // rhythm difficulty zero (due to rhythm not changing) => no rhythm strain.
-            if (hitObject.Rhythm.Difficulty == 0.0)
+            // Get the base difficulty using the evaluator.
+            double objectStrain = RhythmEvaluator.EvaluateDifficultyOf(current, greatHitWindow);
+
+            // Rhythm difficulty zero (due to rhythm not changing) => no rhythm strain.
+            if (objectStrain == 0.0)
             {
                 return 0.0;
             }
 
-            double objectStrain = hitObject.Rhythm.Difficulty;
-
+            // Apply penalties and bonuses from the new logic.
             objectStrain *= repetitionPenalties(hitObject);
             objectStrain *= patternLengthPenalty(notesSinceRhythmChange);
             objectStrain *= speedPenalty(hitObject.DeltaTime);
 
-            // careful - needs to be done here since calls above read this value
+            // Reset notesSinceRhythmChange after applying penalties.
             notesSinceRhythmChange = 0;
 
             currentStrain += objectStrain;
