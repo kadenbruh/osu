@@ -7,65 +7,84 @@ using System.Collections.Generic;
 namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
 {
     /// <summary>
-    /// A base class for grouping <see cref="IHasInterval"/>s by their interval. In edges where an interval change
-    /// occurs, the <see cref="IHasInterval"/> is added to the group with the smaller interval.
+    /// A base class for grouping <see cref="IHasInterval"/> instances by their interval.
+    /// In scenarios where an interval change occurs, the <see cref="IHasInterval"/> is added to the group with the smaller interval.
     /// </summary>
+    /// <typeparam name="ChildType">The type of child objects that implement <see cref="IHasInterval"/>.</typeparam>
     public abstract class EvenRhythm<ChildType>
         where ChildType : IHasInterval
     {
+        /// <summary>
+        /// Gets the list of child objects within this rhythm group.
+        /// </summary>
         public IReadOnlyList<ChildType> Children { get; private set; }
 
-        private bool isFlat(ChildType current, ChildType previous, double marginOfError)
-        {
-            return Math.Abs(current.Interval - previous.Interval) <= marginOfError;
-        }
-
         /// <summary>
-        /// Create a new <see cref="EvenRhythm{ChildType}"/> from a list of <see cref="IHasInterval"/>s, and add
-        /// them to the <see cref="Children"/> list until the end of the group.
+        /// Initializes a new instance of the <see cref="EvenRhythm{ChildType}"/> class.
+        /// Groups child objects from the provided data list based on their intervals.
         /// </summary>
-        ///
-        /// <param name="data">The list of <see cref="IHasInterval"/>s.</param>
-        ///
-        /// <param name="i">
-        /// Index in <paramref name="data"/> to start adding children. This will be modified and should be passed into
-        /// the next <see cref="EvenRhythm{ChildType}"/>'s constructor.
+        /// <param name="data">The list of <see cref="IHasInterval"/> instances to group.</param>
+        /// <param name="currentIndex">
+        /// The current index in the <paramref name="data"/> list to start grouping from.
+        /// This index is updated to reflect the position after the last grouped child.
         /// </param>
-        ///
         /// <param name="marginOfError">
-        /// The margin of error for the interval, within of which no interval change is considered to have occured.
+        /// The allowable margin of error for interval differences within a group.
+        /// Intervals differing by less than or equal to this value are considered equal.
         /// </param>
-        protected EvenRhythm(List<ChildType> data, ref int i, double marginOfError)
+        protected EvenRhythm(List<ChildType> data, ref int currentIndex, double marginOfError)
         {
             List<ChildType> children = new List<ChildType>();
             Children = children;
-            children.Add(data[i]);
-            i++;
 
-            for (; i < data.Count - 1; i++)
+            // Add the first child to the group
+            children.Add(data[currentIndex]);
+            currentIndex++;
+
+            // Iterate through the data to group children with similar intervals
+            for (; currentIndex < data.Count - 1; currentIndex++)
             {
-                // An interval change occured, add the current data if the next interval is larger.
-                if (!isFlat(data[i], data[i + 1], marginOfError))
+                ChildType current = data[currentIndex];
+                ChildType next = data[currentIndex + 1];
+
+                if (!IsFlat(current, next, marginOfError))
                 {
-                    if (data[i + 1].Interval > data[i].Interval + marginOfError)
+                    // If the next interval is significantly larger, include the current child in this group
+                    if (next.Interval > current.Interval + marginOfError)
                     {
-                        children.Add(data[i]);
-                        i++;
+                        children.Add(current);
+                        currentIndex++;
                     }
 
-                    return;
+                    // An interval change has occurred; end the current group
+                    break;
                 }
 
-                // No interval change occured
-                children.Add(data[i]);
+                // No significant interval change; add the current child to the group
+                children.Add(current);
             }
 
-            // Handle final data
-            if (data.Count > 2 && isFlat(data[^1], data[^2], marginOfError))
+            // Handle the last element if it hasn't been grouped yet
+            if (currentIndex < data.Count && (data.Count <= 2 || IsFlat(data[^1], data[^2], marginOfError)))
             {
-                children.Add(data[i]);
-                i++;
+                children.Add(data[currentIndex]);
+                currentIndex++;
             }
+        }
+
+        /// <summary>
+        /// Determines whether two <see cref="IHasInterval"/> instances have similar intervals within the specified margin of error.
+        /// </summary>
+        /// <param name="current">The current <see cref="IHasInterval"/> instance.</param>
+        /// <param name="next">The next <see cref="IHasInterval"/> instance.</param>
+        /// <param name="marginOfError">The allowable margin of error for interval differences.</param>
+        /// <returns>
+        /// <c>true</c> if the absolute difference between the intervals of <paramref name="current"/> and <paramref name="next"/> is
+        /// less than or equal to <paramref name="marginOfError"/>; otherwise, <c>false</c>.
+        /// </returns>
+        protected bool IsFlat(ChildType current, ChildType next, double marginOfError)
+        {
+            return Math.Abs(current.Interval - next.Interval) <= marginOfError;
         }
     }
 }
