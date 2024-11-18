@@ -24,7 +24,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double difficulty_multiplier = 0.084375;
         private const double rhythm_skill_multiplier = 0.10 * difficulty_multiplier;
         private const double colour_skill_multiplier = 0.30 * difficulty_multiplier;
-        private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
+        private const double stamina_skill_multiplier = 0.40 * difficulty_multiplier;
 
         public override int Version => 20241007;
 
