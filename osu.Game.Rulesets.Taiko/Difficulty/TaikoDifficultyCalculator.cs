@@ -22,9 +22,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     public class TaikoDifficultyCalculator : DifficultyCalculator
     {
         private const double difficulty_multiplier = 0.084375;
-        private const double rhythm_skill_multiplier = 0.10 * difficulty_multiplier;
-        private const double colour_skill_multiplier = 0.30 * difficulty_multiplier;
-        private const double stamina_skill_multiplier = 0.40 * difficulty_multiplier;
+        private const double rhythm_skill_multiplier = 0.08 * difficulty_multiplier;
+        private const double colour_skill_multiplier = 0.375 * difficulty_multiplier;
+        private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
+
+        private double simpleRhythmPenalty;
 
         public override int Version => 20241007;
 
@@ -96,6 +98,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
+            const double threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies .
+            const double upper_bound = threshold * 2; // Upper bound of the Penalty.
+
+            // Only apply the penalty when rhythmRating is below the threshold
+            simpleRhythmPenalty = rhythmRating <= threshold
+                ? Math.Log(threshold / rhythmRating) * Math.Min(upper_bound, Math.Log(Math.Max(1, colourRating - upper_bound)) + upper_bound)
+                : 0;
+
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
             double starRating = rescale(combinedRating * 1.5);
 
@@ -156,7 +166,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
-                double colourPeak = colourPeaks[i] * colour_skill_multiplier;
+                double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 17);
                 double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
                 double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
 
