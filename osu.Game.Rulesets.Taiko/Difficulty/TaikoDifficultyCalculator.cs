@@ -83,6 +83,27 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             return difficultyHitObjects;
         }
 
+        private double simplePatternPenalty(double rhythmRating, double colourRating, bool isDoubleTime)
+        {
+            // Constants for rhythm
+            const double rhythm_threshold = 2.5;
+            const double rhythm_upper_bound = rhythm_threshold * 2;
+
+            // Constants for colour
+            double colourThreshold = isDoubleTime ? 6.0 : 4.0;
+            double colourUpperBound = colourThreshold * 2;
+
+            simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
+            simpleColourPenalty = patternRating(colourRating, colourThreshold, colourUpperBound, rhythmRating);
+
+            // Ensure penalties are non-negative
+            simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
+            simpleColourPenalty = Math.Max(0, simpleColourPenalty);
+
+            // Return the combined penalty
+            return simpleRhythmPenalty + simpleColourPenalty;
+        }
+
         protected override DifficultyAttributes CreateDifficultyAttributes(IBeatmap beatmap, Mod[] mods, Skill[] skills, double clockRate)
         {
             if (beatmap.HitObjects.Count == 0)
@@ -99,28 +120,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            const double rhythm_threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies.
             // Check if DoubleTime mod is active
             bool isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
-            // Set the colour threshold based on whether DoubleTime is active
-            double colourThreshold = isDoubleTime ? 6.0 : 4.0;
 
-            const double rhythm_upper_bound = rhythm_threshold * 2; // Upper bound of the penalty for rhythm.
-            double colourUpperBound = colourThreshold * 2;
-
-            // Only apply the rhythm penalty when rhythmRating is below the threshold
-            simpleRhythmPenalty = rhythmRating <= rhythm_threshold
-                ? Math.Log(rhythm_threshold / rhythmRating) * Math.Min(rhythm_upper_bound, Math.Log(Math.Max(1, colourRating - rhythm_upper_bound)) + rhythm_upper_bound)
-                : 0;
-
-            // Only apply the colour penalty when colourRating is below the threshold
-            simpleColourPenalty = colourRating <= colourThreshold
-                ? Math.Log(colourThreshold / colourRating) * Math.Min(colourUpperBound, Math.Log(Math.Max(1, rhythmRating - colourUpperBound)) + colourUpperBound)
-                : 0;
-
-            // Ensure values never decrease when increasing difficulty
-            simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
-            simpleColourPenalty = Math.Max(0, simpleColourPenalty);
+            // Call the penalty calculation function
+            double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, isDoubleTime);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
             double starRating = rescale(combinedRating * 1.6);
@@ -143,8 +147,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 Mods = mods,
                 StaminaDifficulty = staminaRating,
                 MonoStaminaFactor = monoStaminaFactor,
-                SimpleColour = simpleColourPenalty,
-                SimpleRhythm = simpleRhythmPenalty,
+                SimplePattern = patternPenalty,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
                 PeakDifficulty = combinedRating,
@@ -209,6 +212,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             }
 
             return difficulty;
+        }
+
+        // Shared function to calculate penalties
+        private double patternRating(double rating, double threshold, double upperBound, double otherRating)
+        {
+            if (rating > threshold)
+                return 0;
+
+            return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
         }
 
         /// <summary>

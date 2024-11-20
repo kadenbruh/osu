@@ -29,22 +29,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double RhythmDifficulty { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the rhythm skill.
-        /// </summary>
-        [JsonProperty("simple_rhythm_penalty")]
-        public double SimpleRhythm { get; set; }
-
-        /// <summary>
         /// The difficulty corresponding to the colour skill.
         /// </summary>
         [JsonProperty("colour_difficulty")]
         public double ColourDifficulty { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the rhythm skill.
+        /// The penalty factor corresponding to simple patterns based on the correlation between colour and rhythm.
         /// </summary>
-        [JsonProperty("simple_colour_penalty")]
-        public double SimpleColour { get; set; }
+        [JsonProperty("simple_pattern_factor")]
+        public double SimplePattern { get; set; }
 
         /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.
