@@ -27,6 +27,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
+        private double simpleColourPenalty;
 
         public override int Version => 20241007;
 
@@ -98,13 +99,28 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            const double threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies .
-            const double upper_bound = threshold * 2; // Upper bound of the Penalty.
+            const double rhythm_threshold = 2.5; // Where rhythmRating = threshold, 0 penalty applies.
+            // Check if DoubleTime mod is active
+            bool isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
+            // Set the colour threshold based on whether DoubleTime is active
+            double colourThreshold = isDoubleTime ? 6.0 : 4.0;
 
-            // Only apply the penalty when rhythmRating is below the threshold
-            simpleRhythmPenalty = rhythmRating <= threshold
-                ? Math.Log(threshold / rhythmRating) * Math.Min(upper_bound, Math.Log(Math.Max(1, colourRating - upper_bound)) + upper_bound)
+            const double rhythm_upper_bound = rhythm_threshold * 2; // Upper bound of the penalty for rhythm.
+            double colourUpperBound = colourThreshold * 2;
+
+            // Only apply the rhythm penalty when rhythmRating is below the threshold
+            simpleRhythmPenalty = rhythmRating <= rhythm_threshold
+                ? Math.Log(rhythm_threshold / rhythmRating) * Math.Min(rhythm_upper_bound, Math.Log(Math.Max(1, colourRating - rhythm_upper_bound)) + rhythm_upper_bound)
                 : 0;
+
+            // Only apply the colour penalty when colourRating is below the threshold
+            simpleColourPenalty = colourRating <= colourThreshold
+                ? Math.Log(colourThreshold / colourRating) * Math.Min(colourUpperBound, Math.Log(Math.Max(1, rhythmRating - colourUpperBound)) + colourUpperBound)
+                : 0;
+
+            // Ensure values never decrease when increasing difficulty
+            simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
+            simpleColourPenalty = Math.Max(0, simpleColourPenalty);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
             double starRating = rescale(combinedRating * 1.6);
@@ -127,6 +143,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 Mods = mods,
                 StaminaDifficulty = staminaRating,
                 MonoStaminaFactor = monoStaminaFactor,
+                SimpleColour = simpleColourPenalty,
+                SimpleRhythm = simpleRhythmPenalty,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
                 PeakDifficulty = combinedRating,
@@ -166,10 +184,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
-                double baseColourPeak = colourPeaks[i] * colour_skill_multiplier;
-                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 17);
-                double rhythmPeak = rhythmPeaks[i] * rhythm_skill_multiplier;
-                double staminaPeak = staminaPeaks[i] * stamina_skill_multiplier;
+                double baseColourPeak = colourPeaks[i] * 0.035859375;
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 14);
+                double baserhythmPeak = rhythmPeaks[i] * 0.01190625;
+                double rhythmPeak = baserhythmPeak * Math.Exp(-simpleColourPenalty * 2);
+                double staminaPeak = staminaPeaks[i] * 0.031640625;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
                 peak = norm(2, peak, rhythmPeak);
