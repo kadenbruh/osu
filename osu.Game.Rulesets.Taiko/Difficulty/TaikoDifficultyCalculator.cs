@@ -83,13 +83,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             return difficultyHitObjects;
         }
 
+        /// <summary>
+        /// Calculates the combined penalty based on the relationship between rhythm and colour ratings.
+        /// Lower skill values are penalized more heavily relative to predefined thresholds and their
+        /// interaction with the opposing skill rating.
+        /// </summary>
         private double simplePatternPenalty(double rhythmRating, double colourRating, bool isDoubleTime)
         {
-            // Constants for rhythm
             const double rhythm_threshold = 2.5;
             const double rhythm_upper_bound = rhythm_threshold * 2;
-
-            // Constants for colour
             double colourThreshold = isDoubleTime ? 6.0 : 4.0;
             double colourUpperBound = colourThreshold * 2;
 
@@ -100,7 +102,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
             simpleColourPenalty = Math.Max(0, simpleColourPenalty);
 
-            // Return the combined penalty
             return simpleRhythmPenalty + simpleColourPenalty;
         }
 
@@ -108,6 +109,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         {
             if (beatmap.HitObjects.Count == 0)
                 return new TaikoDifficultyAttributes { Mods = mods };
+
+            bool isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
 
             Colour colour = (Colour)skills.First(x => x is Colour);
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);
@@ -120,10 +123,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            // Check if DoubleTime mod is active
-            bool isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
-
-            // Call the penalty calculation function
             double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, isDoubleTime);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
@@ -187,6 +186,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             for (int i = 0; i < colourPeaks.Count; i++)
             {
+                // Peaks uses separate constants due to strain pertaining differently to display values.
                 double baseColourPeak = colourPeaks[i] * 0.035859375;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 14);
                 double baserhythmPeak = rhythmPeaks[i] * 0.01190625;
@@ -214,12 +214,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             return difficulty;
         }
 
-        // Shared function to calculate penalties
+        /// <summary>
+        /// Calculates the penalty for colour and rhythm based on their relationship making up a pattern.
+        /// Penalising ratings where patterns have a major difference in value.
+        /// </summary>
         private double patternRating(double rating, double threshold, double upperBound, double otherRating)
         {
             if (rating > threshold)
                 return 0;
 
+            // Penalize based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
             return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
         }
 

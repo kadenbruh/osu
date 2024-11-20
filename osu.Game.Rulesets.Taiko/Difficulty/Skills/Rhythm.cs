@@ -80,7 +80,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
                 return 0.0;
             }
 
-            // Apply penalties and bonuses from the new logic.
             objectStrain *= repetitionPenalties(hitObject);
             objectStrain *= patternLengthPenalty(notesSinceRhythmChange);
             objectStrain *= speedPenalty(hitObject.DeltaTime);
