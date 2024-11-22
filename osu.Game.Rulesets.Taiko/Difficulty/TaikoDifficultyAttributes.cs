@@ -47,6 +47,24 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double PeakDifficulty { get; set; }
 
         /// <summary>
+        /// The difficulty corresponding to the hardest parts of the map.
+        /// </summary>
+        [JsonProperty("stamina_difficult_strains")]
+        public double StaminaTopStrains { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the hardest parts of the map.
+        /// </summary>
+        [JsonProperty("rhythm_difficult_strains")]
+        public double RhythmTopStrains { get; set; }
+
+        /// <summary>
+        /// The difficulty corresponding to the hardest parts of the map.
+        /// </summary>
+        [JsonProperty("colour_difficult_strains")]
+        public double ColourTopStrains { get; set; }
+
+        /// <summary>
         /// The perceived hit window for a GREAT hit inclusive of rate-adjusting mods (DT/HT/etc).
         /// </summary>
         /// <remarks>

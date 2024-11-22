@@ -27,7 +27,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
-        private double simpleColourPenalty;
+
+        private double colourDifficultStrains;
+        private double rhythmDifficultStrains;
+        private double staminaDifficultStrains;
 
         public override int Version => 20241007;
 
@@ -88,21 +91,15 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// Lower skill values are penalized more heavily relative to predefined thresholds and their
         /// interaction with the opposing skill rating.
         /// </summary>
-        private double simplePatternPenalty(double rhythmRating, double colourRating, bool isDoubleTime)
+        private double simplePatternPenalty(double rhythmRating, double colourRating)
         {
             const double rhythm_threshold = 2.5;
             const double rhythm_upper_bound = rhythm_threshold * 2;
-            double colourThreshold = isDoubleTime ? 6.0 : 4.0;
-            double colourUpperBound = colourThreshold * 2;
 
             simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
-            simpleColourPenalty = patternRating(colourRating, colourThreshold, colourUpperBound, rhythmRating);
-
-            // Ensure penalties are non-negative
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
-            simpleColourPenalty = Math.Max(0, simpleColourPenalty);
 
-            return simpleRhythmPenalty + simpleColourPenalty;
+            return simpleRhythmPenalty;
         }
 
         protected override DifficultyAttributes CreateDifficultyAttributes(IBeatmap beatmap, Mod[] mods, Skill[] skills, double clockRate)
@@ -110,7 +107,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (beatmap.HitObjects.Count == 0)
                 return new TaikoDifficultyAttributes { Mods = mods };
 
-            bool isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
+            mods.Any(h => h is TaikoModDoubleTime);
 
             Colour colour = (Colour)skills.First(x => x is Colour);
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);
@@ -123,7 +120,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double monoStaminaRating = singleColourStamina.DifficultyValue() * stamina_skill_multiplier;
             double monoStaminaFactor = staminaRating == 0 ? 1 : Math.Pow(monoStaminaRating / staminaRating, 5);
 
-            double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, isDoubleTime);
+            colourDifficultStrains = colour.CountTopWeightedStrains();
+            rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
+            staminaDifficultStrains = stamina.CountTopWeightedStrains();
+
+            double patternPenalty = simplePatternPenalty(rhythmRating, colourRating);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
             double starRating = rescale(combinedRating * 1.6);
@@ -149,6 +150,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 SimplePattern = patternPenalty,
                 RhythmDifficulty = rhythmRating,
                 ColourDifficulty = colourRating,
+                StaminaTopStrains = staminaDifficultStrains,
+                RhythmTopStrains = rhythmDifficultStrains,
+                ColourTopStrains = colourDifficultStrains,
                 PeakDifficulty = combinedRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
