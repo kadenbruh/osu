@@ -200,7 +200,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 // Peaks uses separate constants due to strain pertaining differently to display values.
                 double baseColourPeak = colourPeaks[i] * 0.035859375;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 14);
-                double rhythmPeak = rhythmPeaks[i] * 0.03490625;
+                double rhythmPeak = rhythmPeaks[i] * 0.03790625;
                 double staminaPeak = staminaPeaks[i] * 0.031640625;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);

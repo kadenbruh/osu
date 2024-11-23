@@ -51,19 +51,20 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
 
         private static bool isConsistentPattern(EvenHitObjects evenHitObjects, double threshold = 0.1)
         {
-            // Collect the last 3 intervals (current, previous, second previous).
+            // Collect the last 4 intervals (current, last 3 previous).
             List<double?> intervals = new List<double?>
             {
                 evenHitObjects.HitObjectInterval,
                 evenHitObjects.Previous?.HitObjectInterval,
-                evenHitObjects.Previous?.Previous?.HitObjectInterval
+                evenHitObjects.Previous?.Previous?.HitObjectInterval,
+                evenHitObjects.Previous?.Previous?.Previous?.HitObjectInterval
             };
 
             // Remove null intervals (if any patterns are too short).
             intervals.RemoveAll(interval => interval == null);
 
-            // If there are fewer than 3 valid intervals, skip the consistency check.
-            if (intervals.Count < 3)
+            // If there are fewer than 4 valid intervals, skip the consistency check.
+            if (intervals.Count < 4)
                 return false;
 
             // Compare all pairs of intervals in the window.
