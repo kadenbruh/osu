@@ -127,7 +127,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double patternPenalty = simplePatternPenalty(rhythmRating, colourRating);
 
             double combinedRating = combinedDifficultyValue(rhythm, colour, stamina);
-            double starRating = rescale(combinedRating * 1.6);
+            double starRating = rescale(combinedRating * 1.8);
 
             // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
             if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
@@ -192,7 +192,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 // Peaks uses separate constants due to strain pertaining differently to display values.
                 double baseColourPeak = colourPeaks[i] * 0.035859375;
-                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 14);
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 18);
                 double rhythmPeak = rhythmPeaks[i] * 0.01190625;
                 double staminaPeak = staminaPeaks[i] * 0.031640625;
 

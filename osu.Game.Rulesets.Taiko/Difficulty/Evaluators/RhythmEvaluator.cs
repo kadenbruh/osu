@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Utils;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
@@ -48,6 +49,38 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             return difficulty / Math.Sqrt(8);
         }
 
+        private static bool isConsistentPattern(EvenHitObjects evenHitObjects, double threshold = 0.1)
+        {
+            // Collect the last 3 intervals (current, previous, second previous).
+            List<double?> intervals = new List<double?>
+            {
+                evenHitObjects.HitObjectInterval,
+                evenHitObjects.Previous?.HitObjectInterval,
+                evenHitObjects.Previous?.Previous?.HitObjectInterval
+            };
+
+            // Remove null intervals (if any patterns are too short).
+            intervals.RemoveAll(interval => interval == null);
+
+            // If there are fewer than 3 valid intervals, skip the consistency check.
+            if (intervals.Count < 3)
+                return false;
+
+            // Compare all pairs of intervals in the window.
+            for (int i = 0; i < intervals.Count; i++)
+            {
+                for (int j = i + 1; j < intervals.Count; j++)
+                {
+                    double ratio = intervals[i]!.Value / intervals[j]!.Value;
+                    if (Math.Abs(1 - ratio) <= threshold) // If any two intervals are similar, return true.
+                        return true;
+                }
+            }
+
+            // No similar intervals were found.
+            return false;
+        }
+
         private static double evaluateDifficultyOf(EvenHitObjects evenHitObjects, double hitWindow)
         {
             double intervalDifficulty = ratioDifficulty(evenHitObjects.HitObjectIntervalRatio);
@@ -65,6 +98,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
                     midpointOffset: 0.5,
                     multiplier: 1.5,
                     maxValue: 1);
+            }
+
+            // Penalize consistent patterns.
+            if (isConsistentPattern(evenHitObjects))
+            {
+                intervalDifficulty *= 0.7; // Nerf by 30% for consistent patterns.
             }
 
             // Penalize patterns that can be hit within a single hit window.
