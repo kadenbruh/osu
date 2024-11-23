@@ -99,6 +99,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
 
+            // We count difficult stamina strains to ensure that even if there's no rhythm, very heavy stamina maps still give their respective difficulty.
+            if (staminaDifficultStrains > 1250)
+            {
+                double scale = Math.Min(1, 1250 / staminaDifficultStrains); // Scales between 1 (at 1250) and less as stamina increases.
+                simpleRhythmPenalty *= 0.8 * scale;
+            }
+
             return simpleRhythmPenalty;
         }
 
@@ -192,8 +199,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 // Peaks uses separate constants due to strain pertaining differently to display values.
                 double baseColourPeak = colourPeaks[i] * 0.035859375;
-                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 16);
-                double rhythmPeak = rhythmPeaks[i] * 0.01190625;
+                double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 12);
+                double rhythmPeak = rhythmPeaks[i] * 0.03490625;
                 double staminaPeak = staminaPeaks[i] * 0.031640625;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
