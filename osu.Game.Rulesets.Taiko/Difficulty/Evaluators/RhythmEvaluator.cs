@@ -103,7 +103,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             // Penalize consistent patterns.
             if (isConsistentPattern(evenHitObjects))
             {
-                intervalDifficulty *= 0.7; // Nerf by 30% for consistent patterns.
+                intervalDifficulty *= 0.8; // Nerf by 30% for consistent patterns.
             }
 
             // Penalize patterns that can be hit within a single hit window.
