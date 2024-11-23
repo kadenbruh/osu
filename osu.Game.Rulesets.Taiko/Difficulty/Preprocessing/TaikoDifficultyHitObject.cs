@@ -42,6 +42,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing
         public readonly TaikoDifficultyHitObjectRhythm Rhythm;
 
         /// <summary>
+        /// The interval between this hit object and the surrounding hit objects in its rhythm group.
+        /// </summary>
+        public double? HitObjectInterval { get; set; }
+
+        /// <summary>
         /// Colour data for this hit object. This is used by colour evaluator to calculate colour difficulty, but can be used
         /// by other skills in the future.
         /// </summary>

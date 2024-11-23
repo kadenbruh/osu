@@ -51,6 +51,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
             foreach (var hitObject in Children)
             {
                 hitObject.Rhythm.EvenHitObjects = this;
+
+                // Pass the HitObjectInterval to each child.
+                hitObject.HitObjectInterval = HitObjectInterval;
             }
 
             calculateIntervals();
