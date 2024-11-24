@@ -27,7 +27,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
-        private double simpleColourPenalty = 1;
+        private double simpleColourPenalty;
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
@@ -116,9 +116,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleRhythmPenalty *= 0.85 * scale;
             }
 
-            if (colourDifficultStrains < 75)
+            // Calculate separate colour penalty.
+            const double colour_threshold = 1.25;
+
+            if (colourRating < colour_threshold)
             {
-                simpleColourPenalty *= 0.1;
+                double colourPenaltyFactor = (colour_threshold - colourRating) / colour_threshold; // Scaled penalty.
+                simpleColourPenalty = 0.50 * colourPenaltyFactor; // Up to 30% penalty for very low colour ratings.
             }
 
             return simpleRhythmPenalty;
