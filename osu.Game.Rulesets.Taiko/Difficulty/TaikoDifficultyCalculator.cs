@@ -112,7 +112,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (staminaDifficultStrains > 1250)
             {
                 double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Capped out at 2000 difficult strains to prevent overly long maps abusing this bonus.
-                simpleRhythmPenalty *= 0.8 * scale;
+                simpleRhythmPenalty *= 0.85 * scale;
             }
 
             return simpleRhythmPenalty;
