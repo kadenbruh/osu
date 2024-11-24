@@ -60,7 +60,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
                 children.Add(data[i]);
             }
 
-            // Handle final data
+            // Check if the last two objects in the data form a "flat" rhythm pattern within the specified margin of error.
+            // If true, add the current object to the group and increment the index to process the next object.
             if (data.Count > 2 && isFlat(data[^1], data[^2], marginOfError))
             {
                 children.Add(data[i]);

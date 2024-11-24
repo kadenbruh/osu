@@ -14,6 +14,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
     {
         public TaikoDifficultyHitObject FirstHitObject => Children.First();
 
+        public EvenHitObjects? Previous;
+
         /// <summary>
         /// <see cref="DifficultyHitObject.StartTime"/> of the first hit object.
         /// </summary>
@@ -23,8 +25,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         /// The interval between the first and final hit object within this group.
         /// </summary>
         public double Duration => Children.Last().StartTime - Children.First().StartTime;
-
-        public EvenHitObjects? Previous;
 
         /// <summary>
         /// The interval in ms of each hit object in this <see cref="EvenHitObjects"/>. This is only defined if there is

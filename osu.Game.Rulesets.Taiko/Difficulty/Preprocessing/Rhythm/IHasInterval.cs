@@ -3,6 +3,9 @@
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
 {
+    /// <summary>
+    /// Represents hitobjects that provide an interval value,
+    /// </summary>
     public interface IHasInterval
     {
         double Interval { get; }

@@ -12,7 +12,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
     /// </summary>
     public class TaikoDifficultyHitObjectRhythm
     {
+        /// <summary>
+        /// The group of hit objects with consistent rhythm that this object belongs to.
+        /// </summary>
         public EvenHitObjects? EvenHitObjects;
+
+        /// <summary>
+        /// The larger pattern of rhythm groups that this object is part of.
+        /// </summary>
         public EvenPatterns? EvenPatterns;
 
         /// <summary>
@@ -27,6 +34,16 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         /// </summary>
         public readonly double Difficulty;
 
+        /// <summary>
+        /// List of most common rhythm changes in taiko maps. This is used as a display value.
+        /// </summary>
+        /// <remarks>
+        /// The general guidelines for the values are:
+        /// <list type="bullet">
+        /// <item>rhythm changes with ratio closer to 1 (that are <i>not</i> 1) are harder to play,</item>
+        /// <item>speeding up is <i>generally</i> harder than slowing down (with exceptions of rhythm changes requiring a hand switch).</item>
+        /// </list>
+        /// </remarks>
         private static readonly TaikoDifficultyHitObjectRhythm[] common_rhythms =
         {
             new TaikoDifficultyHitObjectRhythm(1, 1, 0.0),
@@ -40,6 +57,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
             new TaikoDifficultyHitObjectRhythm(4, 5, 0.7)
         };
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="TaikoDifficultyHitObjectRhythm"/>s,
+        /// calculating the closest rhythm change and its associated difficulty for the current hit object.
+        /// </summary>
+        /// <param name="current">The current <see cref="TaikoDifficultyHitObject"/> being processed.</param>
         public TaikoDifficultyHitObjectRhythm(TaikoDifficultyHitObject current)
         {
             var previous = current.Previous(0);
@@ -56,12 +78,25 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
             Difficulty = closestRhythm.Difficulty;
         }
 
+        /// <summary>
+        /// Creates an object representing a rhythm change.
+        /// </summary>
+        /// <param name="numerator">The numerator for <see cref="Ratio"/>.</param>
+        /// <param name="denominator">The denominator for <see cref="Ratio"/></param>
+        /// <param name="difficulty">The difficulty multiplier associated with this rhythm change.</param>
         private TaikoDifficultyHitObjectRhythm(int numerator, int denominator, double difficulty)
         {
             Ratio = numerator / (double)denominator;
             Difficulty = difficulty;
         }
 
+        /// <summary>
+        /// Determines the closest rhythm change from <see cref="common_rhythms"/> that matches the timing ratio
+        /// between the current and previous intervals.
+        /// </summary>
+        /// <param name="currentDeltaTime">The time difference between the current hit object and the previous one.</param>
+        /// <param name="previousDeltaTime">The time difference between the previous hit object and the one before it.</param>
+        /// <returns>The closest matching rhythm from <see cref="common_rhythms"/>.</returns>
         private TaikoDifficultyHitObjectRhythm getClosestRhythm(double currentDeltaTime, double previousDeltaTime)
         {
             double ratio = currentDeltaTime / previousDeltaTime;

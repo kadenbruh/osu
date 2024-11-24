@@ -43,12 +43,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// <summary>
         /// The difficulty corresponding to the hardest parts of the map.
         /// </summary>
-        [JsonProperty("peak_difficulty")]
-        public double PeakDifficulty { get; set; }
-
-        /// <summary>
-        /// The difficulty corresponding to the hardest parts of the map.
-        /// </summary>
         [JsonProperty("stamina_difficult_strains")]
         public double StaminaTopStrains { get; set; }
 

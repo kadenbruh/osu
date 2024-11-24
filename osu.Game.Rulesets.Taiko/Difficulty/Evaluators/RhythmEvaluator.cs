@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         /// <summary>
         /// Gives a bonus for target ratio using a bell-shaped function.
         /// </summary>
-        private static double targetedBonus(double ratio, double targetRatio, double width, double multiplier)
+        private static double bellCurve(double ratio, double targetRatio, double width, double multiplier)
         {
             return multiplier * Math.Exp(Math.E * -(Math.Pow(ratio - targetRatio, 2) / Math.Pow(width, 2)));
         }
@@ -41,10 +41,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             difficulty += terms;
 
             // Give bonus to near-1 ratios
-            difficulty += targetedBonus(ratio, 1, 0.5, 1);
+            difficulty += bellCurve(ratio, 1, 0.5, 1);
 
             // Penalize ratios that are VERY near 1
-            difficulty -= targetedBonus(ratio, 1, 0.3, 1);
+            difficulty -= bellCurve(ratio, 1, 0.3, 1);
 
             return difficulty / Math.Sqrt(8);
         }
@@ -101,10 +101,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
                     maxValue: 1);
             }
 
-            // Penalize consistent patterns.
+            // Penalize regular intervals within the last four intervals.
             if (isConsistentPattern(evenHitObjects))
             {
-                intervalDifficulty *= 0.4; // Nerf by 30% for consistent patterns.
+                intervalDifficulty *= 0.4;
             }
 
             // Penalize patterns that can be hit within a single hit window.

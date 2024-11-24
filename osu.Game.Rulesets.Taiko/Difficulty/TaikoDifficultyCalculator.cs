@@ -116,13 +116,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleRhythmPenalty *= 0.85 * scale;
             }
 
-            // Calculate separate colour penalty.
             const double colour_threshold = 1.25;
 
             if (colourRating < colour_threshold)
             {
-                double colourPenaltyFactor = (colour_threshold - colourRating) / colour_threshold; // Scaled penalty.
-                simpleColourPenalty = 0.50 * colourPenaltyFactor; // Up to 30% penalty for very low colour ratings.
+                double colourPenaltyFactor = (colour_threshold - colourRating) / colour_threshold;
+                simpleColourPenalty = 0.50 * colourPenaltyFactor;
             }
 
             return simpleRhythmPenalty;
@@ -150,7 +149,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
             staminaDifficultStrains = stamina.CountTopWeightedStrains();
 
-            // Due to the constraints of osu!taiko stamina, adding halftime doesn't effectively lower it, thus we must manually reduce it.
+            // Due to the constraints of strain, adding halftime doesn't effectively lower it, thus we must manually reduce it.
             if (isHalfTime)
                 staminaDifficultStrains *= 0.75;
 
@@ -178,12 +177,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 StaminaDifficulty = staminaRating,
                 MonoStaminaFactor = monoStaminaFactor,
                 SimplePattern = patternPenalty,
-                RhythmDifficulty = rhythmRating,
+                RhythmDifficulty = rhythmRating * 8,
                 ColourDifficulty = colourRating,
                 StaminaTopStrains = staminaDifficultStrains,
                 RhythmTopStrains = rhythmDifficultStrains,
                 ColourTopStrains = colourDifficultStrains,
-                PeakDifficulty = combinedRating,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
                 MaxCombo = beatmap.GetMaxCombo(),
@@ -248,7 +246,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         }
 
         /// <summary>
-        /// Calculates the penalty for colour and rhythm based on their relationship making up a pattern.
+        /// Calculates the penalty for skills based on their relationship making up a pattern.
         /// Penalising ratings where patterns have a major difference in value.
         /// </summary>
         private double patternRating(double rating, double threshold, double upperBound, double otherRating)
