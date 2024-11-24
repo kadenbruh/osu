@@ -102,7 +102,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             // We count difficult stamina strains to ensure that even if there's no rhythm, very heavy stamina maps still give their respective difficulty.
             if (staminaDifficultStrains > 1250)
             {
-                double scale = Math.Min(1, 1250 / staminaDifficultStrains); // Scales between 1 (at 1250) and less as stamina increases.
+                double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Scales between 1 (at 1250) and less as stamina increases.
                 simpleRhythmPenalty *= 0.8 * scale;
             }
 
@@ -114,7 +114,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (beatmap.HitObjects.Count == 0)
                 return new TaikoDifficultyAttributes { Mods = mods };
 
-            mods.Any(h => h is TaikoModDoubleTime);
+            bool isHalfTime = mods.Any(h => h is TaikoModHalfTime);
 
             Colour colour = (Colour)skills.First(x => x is Colour);
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);
@@ -130,6 +130,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             colourDifficultStrains = colour.CountTopWeightedStrains();
             rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
             staminaDifficultStrains = stamina.CountTopWeightedStrains();
+
+            // Due to the constraints of osu!taiko stamina, adding halftime doesn't effectively lower it, thus we must manually reduce it.
+            if (isHalfTime)
+                staminaDifficultStrains *= 0.75;
 
             double patternPenalty = simplePatternPenalty(rhythmRating, colourRating);
 
