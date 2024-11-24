@@ -27,6 +27,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
+        private double simpleColourPenalty = 1;
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
@@ -113,6 +114,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             {
                 double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Capped out at 2000 difficult strains to prevent overly long maps abusing this bonus.
                 simpleRhythmPenalty *= 0.85 * scale;
+            }
+
+            if (colourDifficultStrains < 75)
+            {
+                simpleColourPenalty *= 0.1;
             }
 
             return simpleRhythmPenalty;
@@ -213,7 +219,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 // Peaks uses separate constants due to strain pertaining differently to display values.
                 double baseColourPeak = colourPeaks[i] * 0.035859375;
                 double colourPeak = baseColourPeak * Math.Exp(-simpleRhythmPenalty / 14);
-                double rhythmPeak = rhythmPeaks[i] * 0.03790625;
+                double rhythmPeak = rhythmPeaks[i] * 0.03790625 * simpleColourPenalty;
                 double staminaPeak = staminaPeaks[i] * 0.031640625;
 
                 double peak = norm(1.5, colourPeak, staminaPeak);
