@@ -63,25 +63,34 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         protected override IEnumerable<DifficultyHitObject> CreateDifficultyHitObjects(IBeatmap beatmap, double clockRate)
         {
-            HitWindows hitWindows = new HitWindows();
+            var hitWindows = new HitWindows();
             hitWindows.SetDifficulty(beatmap.Difficulty.OverallDifficulty);
 
-            List<DifficultyHitObject> difficultyHitObjects = new List<DifficultyHitObject>();
-            List<TaikoDifficultyHitObject> centreObjects = new List<TaikoDifficultyHitObject>();
-            List<TaikoDifficultyHitObject> rimObjects = new List<TaikoDifficultyHitObject>();
-            List<TaikoDifficultyHitObject> noteObjects = new List<TaikoDifficultyHitObject>();
+            var difficultyHitObjects = new List<DifficultyHitObject>();
+            var centreObjects = new List<TaikoDifficultyHitObject>();
+            var rimObjects = new List<TaikoDifficultyHitObject>();
+            var noteObjects = new List<TaikoDifficultyHitObject>();
 
+            // Generate TaikoDifficultyHitObjects from the beatmap's hit objects.
             for (int i = 2; i < beatmap.HitObjects.Count; i++)
             {
-                difficultyHitObjects.Add(
-                    new TaikoDifficultyHitObject(
-                        beatmap.HitObjects[i], beatmap.HitObjects[i - 1], beatmap.HitObjects[i - 2], clockRate,
-                        difficultyHitObjects, centreObjects, rimObjects, noteObjects, difficultyHitObjects.Count)
-                );
+                difficultyHitObjects.Add(new TaikoDifficultyHitObject(
+                    beatmap.HitObjects[i],
+                    beatmap.HitObjects[i - 1],
+                    beatmap.HitObjects[i - 2],
+                    clockRate,
+                    difficultyHitObjects,
+                    centreObjects,
+                    rimObjects,
+                    noteObjects,
+                    difficultyHitObjects.Count
+                ));
             }
 
+            var groupedHitObjects = EvenHitObjects.GroupHitObjects(noteObjects);
+
             TaikoColourDifficultyPreprocessor.ProcessAndAssign(difficultyHitObjects);
-            EvenPatterns.GroupPatterns(EvenHitObjects.GroupHitObjects(noteObjects));
+            EvenPatterns.GroupPatterns(groupedHitObjects);
 
             return difficultyHitObjects;
         }
@@ -102,7 +111,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             // We count difficult stamina strains to ensure that even if there's no rhythm, very heavy stamina maps still give their respective difficulty.
             if (staminaDifficultStrains > 1250)
             {
-                double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Scales between 1 (at 1250) and less as stamina increases.
+                double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Capped out at 2000 difficult strains to prevent overly long maps abusing this bonus.
                 simpleRhythmPenalty *= 0.8 * scale;
             }
 
