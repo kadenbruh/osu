@@ -27,7 +27,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
         private double simpleRhythmPenalty;
-        private double simpleColourPenalty;
+        private double simpleColourPenalty = 1;
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
