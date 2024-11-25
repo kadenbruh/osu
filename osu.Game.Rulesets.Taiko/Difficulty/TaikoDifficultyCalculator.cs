@@ -28,6 +28,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         private double simpleRhythmPenalty;
         private double simpleColourPenalty = 1;
+        private bool isDoubleTime;
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
@@ -116,11 +117,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleRhythmPenalty *= 0.85 * scale;
             }
 
-            const double colour_threshold = 1.25;
+            double colourThreshold = 1.25;
 
-            if (colourRating < colour_threshold)
+            if (isDoubleTime)
+                colourThreshold *= 1.25;
+
+            if (colourRating < colourThreshold)
             {
-                double colourPenaltyFactor = (colour_threshold - colourRating) / colour_threshold;
+                double colourPenaltyFactor = (colourThreshold - colourRating) / colourThreshold;
                 simpleColourPenalty = 0.50 * colourPenaltyFactor;
             }
 
@@ -133,6 +137,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 return new TaikoDifficultyAttributes { Mods = mods };
 
             bool isHalfTime = mods.Any(h => h is TaikoModHalfTime);
+            isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
 
             Colour colour = (Colour)skills.First(x => x is Colour);
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);

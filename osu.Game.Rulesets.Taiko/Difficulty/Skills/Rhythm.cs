@@ -27,6 +27,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         protected override double StrainValueOf(DifficultyHitObject current)
         {
             double difficulty = RhythmEvaluator.EvaluateDifficultyOf(current, greatHitWindow);
+
+            if (current.DeltaTime > 400)
+                difficulty *= 0.5;
+
             return difficulty;
         }
     }
