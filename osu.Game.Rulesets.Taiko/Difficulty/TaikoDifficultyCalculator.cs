@@ -107,6 +107,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             const double rhythm_threshold = 2.5;
             const double rhythm_upper_bound = rhythm_threshold * 2;
 
+            double colourThreshold = 1.25;
+            if (isDoubleTime)
+                colourThreshold *= 1.25;
+
             simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
 
@@ -117,16 +121,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleRhythmPenalty *= 0.85 * scale;
             }
 
-            double colourThreshold = 1.25;
-
-            if (isDoubleTime)
-                colourThreshold *= 1.25;
-
             if (colourRating < colourThreshold)
             {
                 double colourPenaltyFactor = (colourThreshold - colourRating) / colourThreshold;
                 simpleColourPenalty = 0.50 * colourPenaltyFactor;
             }
+
+            if (colourRating == 0 || rhythmRating == 0)
+                return 0;
 
             return simpleRhythmPenalty;
         }
