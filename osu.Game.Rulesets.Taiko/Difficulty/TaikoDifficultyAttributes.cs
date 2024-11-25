@@ -37,7 +37,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// <summary>
         /// The difficulty corresponding to the reading skill.
         /// </summary>
-        [JsonProperty("reading_difficulty")]
+        [JsonProperty("object_density")]
         public double ObjectDensity { get; set; }
 
         /// <summary>
