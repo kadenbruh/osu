@@ -132,7 +132,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleColourPenalty = 0.50 * colourPenaltyFactor;
             }
 
-            if (colourRating == 0 || rhythmRating == 0)
+            if (colourRating == 0 && rhythmRating == 0)
                 return 0;
 
             return simpleRhythmPenalty;
@@ -272,6 +272,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         {
             if (rating > threshold)
                 return 0;
+
+            // If either Rating is zero, penalize solely based the upper boundary by the threshold
+            if (rating == 0 || otherRating == 0)
+                return Math.Log(upperBound * threshold) * 7;
 
             // Penalize based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
             return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
