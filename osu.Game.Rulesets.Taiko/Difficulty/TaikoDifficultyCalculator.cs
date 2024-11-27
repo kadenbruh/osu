@@ -273,9 +273,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (rating > threshold)
                 return 0;
 
-            // If either Rating is zero, penalize solely based the upper boundary by the threshold
-            if (rating == 0 || otherRating == 0)
-                return Math.Log(upperBound * threshold) * 7;
+            rating = Math.Max(0.01, rating);
+            otherRating = Math.Max(0.01, otherRating);
 
             // Penalize based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
             return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
