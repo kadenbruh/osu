@@ -132,9 +132,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 simpleColourPenalty = 0.50 * colourPenaltyFactor;
             }
 
-            if (colourRating == 0 && rhythmRating == 0)
-                return 0;
-
             return simpleRhythmPenalty;
         }
 
@@ -193,7 +190,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 MonoStaminaFactor = monoStaminaFactor,
                 SimplePattern = patternPenalty,
                 RhythmDifficulty = rhythmRating * 8,
-                ReadingDifficulty = readingRating,
+                ReadingDifficulty = readingRating * 1.5,
                 ObjectDensity = objectDensity,
                 ColourDifficulty = colourRating,
                 StaminaTopStrains = staminaDifficultStrains,
@@ -273,6 +270,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (rating > threshold)
                 return 0;
 
+            // To prevent against skewed values, we treat 0 and 0.01 as the same, to prevent infinity values.
             rating = Math.Max(0.01, rating);
             otherRating = Math.Max(0.01, otherRating);
 
