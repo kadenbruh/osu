@@ -44,7 +44,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         public double Interval { get; private set; } = double.PositiveInfinity;
 
         public EvenHitObjects(EvenHitObjects? previous, List<TaikoDifficultyHitObject> data, ref int i)
-            : base(data, ref i, 3)
+            : base(data, ref i, 5)
         {
             Previous = previous;
 

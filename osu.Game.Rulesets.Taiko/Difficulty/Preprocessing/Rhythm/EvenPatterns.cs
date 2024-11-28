@@ -30,7 +30,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         public IEnumerable<TaikoDifficultyHitObject> AllHitObjects => Children.SelectMany(child => child.Children);
 
         private EvenPatterns(EvenPatterns? previous, List<EvenHitObjects> data, ref int i)
-            : base(data, ref i, 3)
+            : base(data, ref i, 5)
         {
             Previous = previous;
 
