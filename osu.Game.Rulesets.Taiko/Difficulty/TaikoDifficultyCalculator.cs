@@ -107,14 +107,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// Lower skill values are penalized more heavily relative to predefined thresholds and their
         /// interaction with the opposing skill rating.
         /// </summary>
-        private double simplePatternPenalty(double rhythmRating, double colourRating)
+        private double simplePatternPenalty(double rhythmRating, double colourRating, double clockRate)
         {
             const double rhythm_threshold = 2.5;
             const double rhythm_upper_bound = rhythm_threshold * 2;
 
-            double colourThreshold = 1.25;
-            if (isDoubleTime)
-                colourThreshold *= 1.25;
+            double colourThreshold = 1.25 * clockRate;
 
             simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
@@ -159,13 +157,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             colourDifficultStrains = colour.CountTopWeightedStrains();
             rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
-            staminaDifficultStrains = stamina.CountTopWeightedStrains();
+            staminaDifficultStrains = stamina.CountTopWeightedStrains() * clockRate;
 
-            // Due to the constraints of strain, adding halftime doesn't effectively lower it, thus we must manually reduce it.
-            if (isHalfTime)
-                staminaDifficultStrains *= 0.75;
-
-            double patternPenalty = simplePatternPenalty(rhythmRating, colourRating);
+            double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, clockRate);
 
             double combinedRating = combinedDifficultyValue(rhythm, reading, colour, stamina);
             double starRating = rescale(combinedRating * 1.8);

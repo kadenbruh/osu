@@ -3,6 +3,7 @@ using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Taiko.Difficulty.Evaluators;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
+using osu.Game.Rulesets.Taiko.Objects;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
@@ -24,6 +25,12 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         {
             if (current is not TaikoDifficultyHitObject taikoObject)
                 return 0.0;
+
+            // drum rolls and swells are exempt.
+            if (current.BaseObject is not Hit)
+            {
+                return 0.0;
+            }
 
             currentStrain *= StrainDecayBase;
             currentStrain += ReadingEvaluator.EvaluateDifficultyOf(taikoObject) * SkillMultiplier;
