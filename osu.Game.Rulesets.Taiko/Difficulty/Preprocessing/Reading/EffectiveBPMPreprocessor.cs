@@ -25,11 +25,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Reading
         {
             foreach (var currentNoteObject in noteObjects)
             {
+                double startTime = currentNoteObject.StartTime * clockRate;
+
                 // Retrieve the timing point at the note's start time
-                TimingControlPoint currentControlPoint = controlPointInfo.TimingPointAt(currentNoteObject.StartTime);
+                TimingControlPoint currentControlPoint = controlPointInfo.TimingPointAt(startTime);
 
                 // Calculate the slider velocity at the note's start time.
-                double currentSliderVelocity = calculateSliderVelocity(controlPointInfo, currentNoteObject.StartTime, clockRate);
+                double currentSliderVelocity = calculateSliderVelocity(controlPointInfo, startTime, clockRate);
                 currentNoteObject.CurrentSliderVelocity = currentSliderVelocity;
 
                 currentNoteObject.EffectiveBPM = currentControlPoint.BPM * currentSliderVelocity;
