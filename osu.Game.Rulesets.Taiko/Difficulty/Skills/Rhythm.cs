@@ -28,6 +28,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
         {
             double difficulty = RhythmEvaluator.EvaluateDifficultyOf(current, greatHitWindow);
 
+            // To prevent abuse of exceedingly long intervals between awkward rhythms, we penalise its difficulty.
             if (current.DeltaTime > 400)
                 difficulty *= 0.5;
 

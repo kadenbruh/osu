@@ -28,9 +28,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private const double colour_skill_multiplier = 0.425 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
-        private double simpleRhythmPenalty;
+        private double simpleRhythmPenalty = 1;
         private double simpleColourPenalty = 1;
-        private bool isDoubleTime;
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
@@ -137,9 +136,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         {
             if (beatmap.HitObjects.Count == 0)
                 return new TaikoDifficultyAttributes { Mods = mods };
-
-            bool isHalfTime = mods.Any(h => h is TaikoModHalfTime);
-            isDoubleTime = mods.Any(h => h is TaikoModDoubleTime);
 
             Colour colour = (Colour)skills.First(x => x is Colour);
             Rhythm rhythm = (Rhythm)skills.First(x => x is Rhythm);
@@ -264,7 +260,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (rating > threshold)
                 return 0;
 
-            // To prevent against skewed values, we treat 0 and 0.01 as the same, to prevent infinity values.
+            // To prevent against skewed values, we treat 0 and 0.01 as the same to prevent infinity values.
             rating = Math.Max(0.01, rating);
             otherRating = Math.Max(0.01, otherRating);
 
