@@ -111,7 +111,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             const double rhythm_threshold = 2.5;
             const double rhythm_upper_bound = rhythm_threshold * 2;
 
-            double colourThreshold = 1.25 * clockRate;
+            double colourThreshold = 1.25 * clockRate; // Threshold changes based on rate
 
             simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
@@ -160,13 +160,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             double combinedRating = combinedDifficultyValue(rhythm, reading, colour, stamina);
             double starRating = rescale(combinedRating * 1.8);
 
-            // TODO: This is temporary measure as we don't detect abuse of multiple-input playstyles of converts within the current system.
+            // Converts are penalised outside of the scope of difficulty calculation, as our assumptions surrounding playstyle becomes out-of-scope.
             if (beatmap.BeatmapInfo.Ruleset.OnlineID == 0)
             {
                 starRating *= 0.80;
-                // For maps with low colour variance and high stamina requirement, multiple inputs are more likely to be abused.
-                if (colourRating < 2 && staminaRating > 8)
-                    starRating *= 0.725;
             }
 
             HitWindows hitWindows = new TaikoHitWindows();
