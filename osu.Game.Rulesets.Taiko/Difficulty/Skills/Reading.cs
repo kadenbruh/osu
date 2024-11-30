@@ -26,7 +26,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             if (current is not TaikoDifficultyHitObject taikoObject)
                 return 0.0;
 
-            // drum rolls and swells are exempt.
+            // Drum Rolls and Swells are exempt.
             if (current.BaseObject is not Hit)
             {
                 return 0.0;
@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
             currentStrain *= StrainDecayBase;
             currentStrain += ReadingEvaluator.EvaluateDifficultyOf(taikoObject) * SkillMultiplier;
 
-            ObjectDensity = ReadingEvaluator.GetObjectDensity(taikoObject);
+            ObjectDensity = ReadingEvaluator.CalculateObjectDensity(taikoObject);
 
             return currentStrain;
         }
