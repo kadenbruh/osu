@@ -120,8 +120,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty *= staminaFactor;
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
 
-            double colourTransition = Math.Clamp((colourThreshold - colourRating) / 0.1, 0, 1);
-            simpleColourPenalty = 0.50 * colourTransition * ((colourThreshold - colourRating) / colourThreshold);
+            if (colourRating < colourThreshold)
+            {
+                double colourPenaltyFactor = (colourThreshold - colourRating) / colourThreshold;
+                simpleColourPenalty = 0.50 * colourPenaltyFactor;
+            }
 
             return simpleRhythmPenalty;
         }
