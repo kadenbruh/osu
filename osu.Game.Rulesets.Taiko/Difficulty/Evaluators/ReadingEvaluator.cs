@@ -35,17 +35,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         /// <returns>The calculated object density.</returns>
         public static double CalculateObjectDensity(TaikoDifficultyHitObject noteObject)
         {
-            double currentSliderVelocity = noteObject.CurrentSliderVelocity;
-            double deltaTime = noteObject.DeltaTime;
-
-            const double density_max = 300;
-            const double density_min = 50;
-            const double center = 200;
-            const double range = 2000;
-
-            // Adjusts the penalty for low SV based on object density.
-            return density_max - (density_max - density_min) *
-                sigmoid(deltaTime * currentSliderVelocity, center, range);
+            return 150 - (150 - 50)
+                * sigmoid(noteObject.DeltaTime, 200, 300);
         }
 
         /// <summary>
