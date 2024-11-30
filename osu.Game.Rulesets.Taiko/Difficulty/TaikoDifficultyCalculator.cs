@@ -153,7 +153,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             colourDifficultStrains = colour.CountTopWeightedStrains();
             rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
-            staminaDifficultStrains = stamina.CountTopWeightedStrains() * clockRate;
+            staminaDifficultStrains = stamina.CountTopWeightedStrains() * Math.Min(clockRate, 1.25);
 
             double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, clockRate);
 
