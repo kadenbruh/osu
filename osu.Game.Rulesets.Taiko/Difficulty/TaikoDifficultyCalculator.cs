@@ -102,7 +102,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         }
 
         /// <summary>
-        /// Calculates the combined penalty based on the relationship between rhythm and colour ratings.
+        /// Calculates the combined penalty based on the relationship between skills.
         /// Lower skill values are penalized more heavily relative to predefined thresholds and their
         /// interaction with the opposing skill rating.
         /// </summary>
@@ -120,11 +120,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty *= staminaFactor;
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
 
-            if (colourRating < colourThreshold)
-            {
-                double colourPenaltyFactor = (colourThreshold - colourRating) / colourThreshold;
-                simpleColourPenalty = 0.50 * colourPenaltyFactor;
-            }
+            double rhythmTransition = 1 - Math.Max(0, (50 - rhythmDifficultStrains) / 50.0);
+            double colourFactor = Math.Max(1, 0.50 * ((colourThreshold - colourRating) / colourThreshold));
+            simpleColourPenalty = Math.Max(0, rhythmTransition * colourFactor);
 
             return simpleRhythmPenalty;
         }
