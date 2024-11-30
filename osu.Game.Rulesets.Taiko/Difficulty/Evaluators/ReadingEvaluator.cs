@@ -1,5 +1,6 @@
 
 using System;
+using osu.Game.Rulesets.Difficulty.Utils;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
@@ -25,31 +26,18 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             const double center = (velocity_max + velocity_min) / 2;
             const double range = velocity_max - velocity_min;
 
-            return high_sv_multiplier * sigmoid(effectiveBPM, center, range);
+            return high_sv_multiplier * DifficultyCalculationUtils.Logistic(effectiveBPM, center, 1.0 / (range / 10));
         }
 
         /// <summary>
         /// Calculates the object density based on the DeltaTime, EffectiveBPM, and CurrentSliderVelocity.
         /// </summary>
-        /// <param name = "noteObject">The current noteObject to evaluate.</param>
+        /// <param name="noteObject">The current noteObject to evaluate.</param>
         /// <returns>The calculated object density.</returns>
         public static double CalculateObjectDensity(TaikoDifficultyHitObject noteObject)
         {
             return 150 - (150 - 50)
-                * sigmoid(noteObject.DeltaTime, 200, 300);
-        }
-
-        /// <summary>
-        /// Calculates a smooth transition using a sigmoid function.
-        /// </summary>
-        /// <param name="value">The input value.</param>
-        /// <param name="center">The midpoint of the curve where the output transitions most rapidly.</param>
-        /// <param name="range">Determines how steep or gradual the curve is around the center.</param>
-        /// <returns>The calculated sigmoid value.</returns>
-        private static double sigmoid(double value, double center, double range)
-        {
-            range /= 10;
-            return 1 / (1 + Math.Exp(-(value - center) / range));
+                * DifficultyCalculationUtils.Logistic(noteObject.DeltaTime, 200, 1.0 / 30);
         }
     }
 }
