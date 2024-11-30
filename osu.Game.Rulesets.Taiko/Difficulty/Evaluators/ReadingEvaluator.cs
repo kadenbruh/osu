@@ -1,5 +1,4 @@
 
-using System;
 using osu.Game.Rulesets.Difficulty.Utils;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
 

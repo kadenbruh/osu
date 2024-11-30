@@ -108,26 +108,19 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         /// </summary>
         private double simplePatternPenalty(double rhythmRating, double colourRating, double clockRate)
         {
-            const double rhythm_threshold = 2.5;
-            const double rhythm_upper_bound = rhythm_threshold * 2;
-
             double colourThreshold = 1.25 * clockRate; // Threshold changes based on rate
-
-            simpleRhythmPenalty = patternRating(rhythmRating, rhythm_threshold, rhythm_upper_bound, colourRating);
-            simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
+            const double stamina_threshold = 1250.0;
 
             // We count difficult stamina strains to ensure that even if there's no rhythm, very heavy stamina maps still give their respective difficulty.
-            if (staminaDifficultStrains > 1250)
-            {
-                double scale = Math.Min(1, 1250 / Math.Min(2000, staminaDifficultStrains)); // Capped out at 2000 difficult strains to prevent overly long maps abusing this bonus.
-                simpleRhythmPenalty *= 0.85 * scale;
-            }
+            double staminaTransition = Math.Clamp((staminaDifficultStrains - (stamina_threshold - 10)) / 10, 0, 1);
+            double scalingFactor = 1 - (0.15 * staminaTransition) * Math.Min(1, stamina_threshold / Math.Min(2000, staminaDifficultStrains)); // Capped out at 2000 difficult strains to prevent overly long maps abusing this bonus.
 
-            if (colourRating < colourThreshold)
-            {
-                double colourPenaltyFactor = (colourThreshold - colourRating) / colourThreshold;
-                simpleColourPenalty = 0.50 * colourPenaltyFactor;
-            }
+            simpleRhythmPenalty = patternRating(rhythmRating, 2.5, 5, colourRating);
+            simpleRhythmPenalty *= scalingFactor;
+            simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
+
+            double colourTransition = Math.Clamp((colourThreshold - colourRating) / 0.1, 0, 1);
+            simpleColourPenalty = 0.50 * colourTransition * ((colourThreshold - colourRating) / colourThreshold);
 
             return simpleRhythmPenalty;
         }
