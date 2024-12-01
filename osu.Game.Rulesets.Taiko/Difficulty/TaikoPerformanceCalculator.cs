@@ -86,6 +86,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (score.Mods.Any(m => m is ModEasy))
                 difficultyValue *= 0.90;
 
+            if (score.Mods.Any(m => m is ModHardRock))
+                difficultyValue *= 1.10;
+
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
                 difficultyValue *= Math.Max(1, 1.050 - Math.Min(attributes.MonoStaminaFactor / 50, 1) * lengthBonus);
 
@@ -99,22 +102,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         private double computeReadingValue(ScoreInfo score, TaikoDifficultyAttributes attributes)
         {
             double objectDensity = attributes.ObjectDensity;
+            double readingDifficulty = attributes.ReadingDifficulty;
 
-            const double max_multiplier = 100.0; // Maximum multiplier for extreme densities.
+            const double max_multiplier = 100.0;
 
-            double lowDeviation = Math.Max(0, 1.25 - objectDensity);
             double highDeviation = Math.Max(0, objectDensity - 4.0);
-            double totalDeviation = lowDeviation + highDeviation;
+            double readingValue = Math.Pow(highDeviation / 1.0, 2);
 
-            double readingValue = Math.Pow(totalDeviation / 3.0, 2);
-
-            if (score.Mods.Any(m => m is ModHardRock))
-                readingValue *= 1.05;
-
-            if (score.Mods.Any(m => m is ModHidden))
-                readingValue *= 1.05;
-
-            return 15 * max_multiplier * readingValue;
+            return max_multiplier * readingValue;
         }
 
         private double computeAccuracyValue(ScoreInfo score, TaikoDifficultyAttributes attributes, bool isConvert)
