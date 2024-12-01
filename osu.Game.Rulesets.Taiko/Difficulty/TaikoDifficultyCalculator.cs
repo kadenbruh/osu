@@ -191,17 +191,6 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         }
 
         /// <summary>
-        /// Applies a final re-scaling of the star rating.
-        /// </summary>
-        /// <param name="sr">The raw star rating value before re-scaling.</param>
-        private double rescale(double sr)
-        {
-            if (sr < 0) return sr;
-
-            return 10.43 * Math.Log(sr / 8 + 1);
-        }
-
-        /// <summary>
         /// Returns the combined star rating of the beatmap, calculated using peak strains from all sections of the map.
         /// </summary>
         /// <remarks>
@@ -262,6 +251,17 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             // Penalise based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
             return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
+        }
+
+        /// <summary>
+        /// Applies a final re-scaling of the star rating.
+        /// </summary>
+        /// <param name="sr">The raw star rating value before re-scaling.</param>
+        private double rescale(double sr)
+        {
+            if (sr < 0) return sr;
+
+            return 10.43 * Math.Log(sr / 8 + 1);
         }
 
         /// <summary>
