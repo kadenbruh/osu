@@ -3,7 +3,7 @@
 
 using System;
 using System.Linq;
-
+using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm.Data;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
 {

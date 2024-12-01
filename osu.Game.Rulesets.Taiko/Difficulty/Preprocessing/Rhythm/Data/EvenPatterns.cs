@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
+namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm.Data
 {
     /// <summary>
     /// Represents <see cref="EvenHitObjects"/> grouped by their <see cref="EvenHitObjects.StartTime"/>'s interval.

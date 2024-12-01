@@ -13,7 +13,7 @@ using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Colour;
 using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Reading;
-using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm;
+using osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm.Data;
 using osu.Game.Rulesets.Taiko.Difficulty.Skills;
 using osu.Game.Rulesets.Taiko.Mods;
 using osu.Game.Rulesets.Taiko.Scoring;

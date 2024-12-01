@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using osu.Game.Rulesets.Difficulty.Preprocessing;
 
-namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
+namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm.Data
 {
     /// <summary>
     /// Represents a group of <see cref="TaikoDifficultyHitObject"/>s with no rhythm variation.

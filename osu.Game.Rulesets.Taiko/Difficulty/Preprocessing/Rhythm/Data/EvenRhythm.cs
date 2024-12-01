@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
+namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm.Data
 {
     /// <summary>
     /// A base class for grouping <see cref="IHasInterval"/>s by their interval. In edges where an interval change
