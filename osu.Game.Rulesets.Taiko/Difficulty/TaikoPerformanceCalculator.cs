@@ -50,20 +50,20 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (score.Mods.Any(m => m is ModHidden) && !isConvert)
                 multiplier *= 1.075;
 
-            if (score.Mods.Any(m => m is ModEasy))
-                multiplier *= 0.950;
-
             double difficultyValue = computeDifficultyValue(score, taikoAttributes);
+            double readingValue = computeReadingValue(score, taikoAttributes);
             double accuracyValue = computeAccuracyValue(score, taikoAttributes, isConvert);
             double totalValue =
                 Math.Pow(
                     Math.Pow(difficultyValue, 1.1) +
+                    Math.Pow(readingValue, 1.1) +
                     Math.Pow(accuracyValue, 1.1), 1.0 / 1.1
                 ) * multiplier;
 
             return new TaikoPerformanceAttributes
             {
                 Difficulty = difficultyValue,
+                Reading = readingValue,
                 Accuracy = accuracyValue,
                 EffectiveMissCount = effectiveMissCount,
                 EstimatedUnstableRate = estimatedUnstableRate,
@@ -80,23 +80,41 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             difficultyValue *= Math.Pow(0.986, effectiveMissCount);
 
+            if (estimatedUnstableRate == null)
+                return 0;
+
             if (score.Mods.Any(m => m is ModEasy))
                 difficultyValue *= 0.90;
 
-            if (score.Mods.Any(m => m is ModHidden))
-                difficultyValue *= 1.025;
-
             if (score.Mods.Any(m => m is ModFlashlight<TaikoHitObject>))
                 difficultyValue *= Math.Max(1, 1.050 - Math.Min(attributes.MonoStaminaFactor / 50, 1) * lengthBonus);
-
-            if (estimatedUnstableRate == null)
-                return 0;
 
             // Scale accuracy more harshly on nearly-completely mono (single coloured) speed maps.
             double accScalingExponent = 2 + attributes.MonoStaminaFactor;
             double accScalingShift = 300 - 100 * attributes.MonoStaminaFactor;
 
             return difficultyValue * Math.Pow(SpecialFunctions.Erf(accScalingShift / (Math.Sqrt(2) * estimatedUnstableRate.Value)), accScalingExponent);
+        }
+
+        private double computeReadingValue(ScoreInfo score, TaikoDifficultyAttributes attributes)
+        {
+            double objectDensity = attributes.ObjectDensity;
+
+            const double max_multiplier = 100.0; // Maximum multiplier for extreme densities.
+
+            double lowDeviation = Math.Max(0, 1.25 - objectDensity);
+            double highDeviation = Math.Max(0, objectDensity - 4.0);
+            double totalDeviation = lowDeviation + highDeviation;
+
+            double readingValue = Math.Pow(totalDeviation / 3.0, 2);
+
+            if (score.Mods.Any(m => m is ModHardRock))
+                readingValue *= 1.05;
+
+            if (score.Mods.Any(m => m is ModHidden))
+                readingValue *= 1.05;
+
+            return 15 * max_multiplier * readingValue;
         }
 
         private double computeAccuracyValue(ScoreInfo score, TaikoDifficultyAttributes attributes, bool isConvert)
