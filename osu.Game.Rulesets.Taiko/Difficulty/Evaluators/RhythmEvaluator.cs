@@ -52,25 +52,28 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             return difficulty / Math.Sqrt(8);
         }
 
+        /// <summary>
+        /// Determines if the pattern of hit object intervals is consistent based on a given threshold.
+        /// </summary>
         private static bool isConsistentPattern(EvenHitObjects evenHitObjects, double threshold = 0.1)
         {
-            // Collect the last 4 intervals (current, last 3 previous).
-            List<double?> intervals = new List<double?>
-            {
-                evenHitObjects.HitObjectInterval,
-                evenHitObjects.Previous?.HitObjectInterval,
-                evenHitObjects.Previous?.Previous?.HitObjectInterval,
-                evenHitObjects.Previous?.Previous?.Previous?.HitObjectInterval
-            };
+            // Collect the last 4 intervals (current and the last 3 previous).
+            List<double?> intervals = new List<double?>();
+            var currentObject = evenHitObjects;
+            const int interval_count = 4;
 
-            // Remove null intervals
+            for (int i = 0; i < interval_count && currentObject != null; i++)
+            {
+                intervals.Add(currentObject.HitObjectInterval);
+                currentObject = currentObject.Previous;
+            }
+
             intervals.RemoveAll(interval => interval == null);
 
             // If there are fewer than 4 valid intervals, skip the consistency check.
-            if (intervals.Count < 4)
+            if (intervals.Count < interval_count)
                 return false;
 
-            // Compare all pairs of intervals in the window.
             for (int i = 0; i < intervals.Count; i++)
             {
                 for (int j = i + 1; j < intervals.Count; j++)
