@@ -75,8 +75,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
 
         private void calculateIntervals()
         {
+            // Calculate the average interval between hitobjects, or null if there are fewer than two.
             HitObjectInterval = Children.Count < 2 ? null : (Children[^1].StartTime - Children[0].StartTime) / (Children.Count - 1);
 
+            // If both the current and previous intervals are available, calculate the ratio.
             if (Previous?.HitObjectInterval != null && HitObjectInterval != null)
             {
                 HitObjectIntervalRatio = HitObjectInterval.Value / Previous.HitObjectInterval.Value;

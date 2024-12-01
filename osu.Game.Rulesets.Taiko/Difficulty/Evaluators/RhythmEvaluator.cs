@@ -28,6 +28,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             return multiplier * Math.Exp(Math.E * -(Math.Pow(ratio - targetRatio, 2) / Math.Pow(width, 2)));
         }
 
+        /// <summary>
+        /// Calculates the difficulty of a given ratio using a combination of periodic penalties and bonuses.
+        /// </summary>
         private static double ratioDifficulty(double ratio, int terms = 8)
         {
             // Sum of n = 8 terms of periodic penalty.
@@ -43,7 +46,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             // Give bonus to near-1 ratios
             difficulty += bellCurve(ratio, 1, 0.5, 1);
 
-            // Penalize ratios that are VERY near 1
+            // Penalise ratios that are VERY near 1
             difficulty -= bellCurve(ratio, 1, 0.3, 1);
 
             return difficulty / Math.Sqrt(8);
@@ -60,7 +63,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
                 evenHitObjects.Previous?.Previous?.Previous?.HitObjectInterval
             };
 
-            // Remove null intervals (if any patterns are too short).
+            // Remove null intervals
             intervals.RemoveAll(interval => interval == null);
 
             // If there are fewer than 4 valid intervals, skip the consistency check.
@@ -85,10 +88,9 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         private static double evaluateDifficultyOf(EvenHitObjects evenHitObjects, double hitWindow)
         {
             double intervalDifficulty = ratioDifficulty(evenHitObjects.HitObjectIntervalRatio);
-
-            // Penalize patterns that can be played with the same interval as the previous pattern.
             double? previousInterval = evenHitObjects.Previous?.HitObjectInterval;
 
+            // If a previous interval exists and there are multiple hit objects in the sequence:
             if (previousInterval != null && evenHitObjects.Children.Count > 1)
             {
                 double expectedDurationFromPrevious = (double)previousInterval * evenHitObjects.Children.Count;
@@ -101,13 +103,13 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
                     maxValue: 1);
             }
 
-            // Penalize regular intervals within the last four intervals.
+            // Penalise regular intervals within the last four intervals.
             if (isConsistentPattern(evenHitObjects))
             {
                 intervalDifficulty *= 0.4;
             }
 
-            // Penalize patterns that can be hit within a single hit window.
+            // Penalise patterns that can be hit within a single hit window.
             intervalDifficulty *= DifficultyCalculationUtils.Logistic(
                 evenHitObjects.Duration / hitWindow,
                 midpointOffset: 0.5,

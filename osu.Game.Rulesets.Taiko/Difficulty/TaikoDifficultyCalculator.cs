@@ -23,8 +23,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
     public class TaikoDifficultyCalculator : DifficultyCalculator
     {
         private const double difficulty_multiplier = 0.084375;
-        private const double rhythm_skill_multiplier = 0.07 * difficulty_multiplier;
-        private const double reading_skill_multiplier = 0.10 * difficulty_multiplier;
+        private const double rhythm_skill_multiplier = 0.070 * difficulty_multiplier;
+        private const double reading_skill_multiplier = 0.100 * difficulty_multiplier;
         private const double colour_skill_multiplier = 0.425 * difficulty_multiplier;
         private const double stamina_skill_multiplier = 0.375 * difficulty_multiplier;
 
@@ -33,6 +33,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         private double colourDifficultStrains;
         private double rhythmDifficultStrains;
+        private double readingDifficultStrains;
         private double staminaDifficultStrains;
 
         public override int Version => 20241007;
@@ -103,7 +104,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
         /// <summary>
         /// Calculates the combined penalty based on the relationship between skills.
-        /// Lower skill values are penalized more heavily relative to predefined thresholds and their
+        /// Lower skill values are penalised more heavily relative to predefined thresholds and their
         /// interaction with the opposing skill rating.
         /// </summary>
         private double simplePatternPenalty(double rhythmRating, double colourRating, double clockRate)
@@ -120,6 +121,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             simpleRhythmPenalty *= staminaFactor;
             simpleRhythmPenalty = Math.Max(0, simpleRhythmPenalty);
 
+            // For awkwardly snapped maps with low rhythm strain count, we add a penalty.
             double rhythmTransition = 1 - Math.Max(0, (50 - rhythmDifficultStrains) / 50.0);
             double colourFactor = Math.Max(1, 0.50 * ((colourThreshold - colourRating) / colourThreshold));
             simpleColourPenalty = Math.Max(0, rhythmTransition * colourFactor);
@@ -148,7 +150,8 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
 
             colourDifficultStrains = colour.CountTopWeightedStrains();
             rhythmDifficultStrains = rhythm.CountTopWeightedStrains();
-            staminaDifficultStrains = stamina.CountTopWeightedStrains() * Math.Min(clockRate, 1.25);
+            readingDifficultStrains = reading.CountTopWeightedStrains();
+            staminaDifficultStrains = stamina.CountTopWeightedStrains() * Math.Min(clockRate, 1.25); // Bonus is capped past 1.25x rate
 
             double patternPenalty = simplePatternPenalty(rhythmRating, colourRating, clockRate);
 
@@ -177,6 +180,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
                 ColourDifficulty = colourRating,
                 StaminaTopStrains = staminaDifficultStrains,
                 RhythmTopStrains = rhythmDifficultStrains,
+                ReadingTopStrains = readingDifficultStrains,
                 ColourTopStrains = colourDifficultStrains,
                 GreatHitWindow = hitWindows.WindowFor(HitResult.Great) / clockRate,
                 OkHitWindow = hitWindows.WindowFor(HitResult.Ok) / clockRate,
@@ -252,11 +256,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
             if (rating > threshold)
                 return 0;
 
-            // To prevent against skewed values, we treat 0 and 0.01 as the same to prevent infinity values.
+            // To prevent against breaking values we define 0.01 as minimum difficulty.
             rating = Math.Max(0.01, rating);
             otherRating = Math.Max(0.01, otherRating);
 
-            // Penalize based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
+            // Penalise based on logarithmic difference from the skill-based threshold, scaled by the influence of the other rating
             return Math.Log(threshold / rating) * Math.Min(upperBound, Math.Log(Math.Max(1, otherRating - upperBound)) + upperBound);
         }
 

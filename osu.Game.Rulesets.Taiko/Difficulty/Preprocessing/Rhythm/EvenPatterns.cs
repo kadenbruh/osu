@@ -44,7 +44,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         {
             List<EvenPatterns> evenPatterns = new List<EvenPatterns>();
 
-            // Index does not need to be incremented, as it is handled within EvenRhythm's constructor.
+            // Index does not need to be incremented, as it is handled within the EvenRhythm constructor.
             for (int i = 0; i < data.Count;)
             {
                 EvenPatterns? previous = evenPatterns.Count > 0 ? evenPatterns[^1] : null;

@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double ReadingDifficulty { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the reading skill.
+        /// Determines the object density of a beatmap, based on DeltaTime.
         /// </summary>
         [JsonProperty("object_density")]
         public double ObjectDensity { get; set; }
@@ -47,26 +47,23 @@ namespace osu.Game.Rulesets.Taiko.Difficulty
         public double ColourDifficulty { get; set; }
 
         /// <summary>
-        /// The penalty factor corresponding to simple patterns based on the correlation between colour and rhythm.
+        /// The penalty factor corresponding to patterns based on their correlation between skills.
         /// </summary>
         [JsonProperty("simple_pattern_factor")]
         public double SimplePattern { get; set; }
 
         /// <summary>
-        /// The difficulty corresponding to the hardest parts of the map.
+        /// Determines the amount of difficult strain peaks present within each skill.
         /// </summary>
         [JsonProperty("stamina_difficult_strains")]
         public double StaminaTopStrains { get; set; }
 
-        /// <summary>
-        /// The difficulty corresponding to the hardest parts of the map.
-        /// </summary>
         [JsonProperty("rhythm_difficult_strains")]
         public double RhythmTopStrains { get; set; }
 
-        /// <summary>
-        /// The difficulty corresponding to the hardest parts of the map.
-        /// </summary>
+        [JsonProperty("reading_difficult_strains")]
+        public double ReadingTopStrains { get; set; }
+
         [JsonProperty("colour_difficult_strains")]
         public double ColourTopStrains { get; set; }
 

@@ -7,6 +7,9 @@ using osu.Game.Rulesets.Taiko.Objects;
 
 namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
 {
+    /// <summary>
+    /// Calculates the reading coefficient of taiko difficulty.
+    /// </summary>
     public class Reading : StrainDecaySkill
     {
         protected override double SkillMultiplier => 1.0;
@@ -32,10 +35,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Skills
                 return 0.0;
             }
 
+            ObjectDensity = ReadingEvaluator.CalculateObjectDensity(taikoObject);
+
             currentStrain *= StrainDecayBase;
             currentStrain += ReadingEvaluator.EvaluateDifficultyOf(taikoObject) * SkillMultiplier;
-
-            ObjectDensity = ReadingEvaluator.CalculateObjectDensity(taikoObject);
 
             return currentStrain;
         }

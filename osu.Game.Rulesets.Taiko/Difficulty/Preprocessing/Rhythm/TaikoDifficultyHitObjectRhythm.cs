@@ -58,7 +58,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         };
 
         /// <summary>
-        /// Initializes a new instance of <see cref="TaikoDifficultyHitObjectRhythm"/>s,
+        /// Initialises a new instance of <see cref="TaikoDifficultyHitObjectRhythm"/>s,
         /// calculating the closest rhythm change and its associated difficulty for the current hit object.
         /// </summary>
         /// <param name="current">The current <see cref="TaikoDifficultyHitObject"/> being processed.</param>

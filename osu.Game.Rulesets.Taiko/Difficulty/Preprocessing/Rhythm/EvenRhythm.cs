@@ -15,6 +15,10 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
     {
         public IReadOnlyList<ChildType> Children { get; private set; }
 
+        /// <summary>
+        /// Determines if the intervals between two child objects are within a specified margin of error,
+        /// indicating that the intervals are effectively "flat" or consistent.
+        /// </summary>
         private bool isFlat(ChildType current, ChildType previous, double marginOfError)
         {
             return Math.Abs(current.Interval - previous.Interval) <= marginOfError;
@@ -24,14 +28,11 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Preprocessing.Rhythm
         /// Create a new <see cref="EvenRhythm{ChildType}"/> from a list of <see cref="IHasInterval"/>s, and add
         /// them to the <see cref="Children"/> list until the end of the group.
         /// </summary>
-        ///
         /// <param name="data">The list of <see cref="IHasInterval"/>s.</param>
-        ///
         /// <param name="i">
         /// Index in <paramref name="data"/> to start adding children. This will be modified and should be passed into
         /// the next <see cref="EvenRhythm{ChildType}"/>'s constructor.
         /// </param>
-        ///
         /// <param name="marginOfError">
         /// The margin of error for the interval, within of which no interval change is considered to have occured.
         /// </param>
