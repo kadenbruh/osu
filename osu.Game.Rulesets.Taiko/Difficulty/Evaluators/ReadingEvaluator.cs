@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
             double effectiveBPM = noteObject.EffectiveBPM;
 
             const double velocity_max = 640;
-            const double velocity_min = 480;
+            const double velocity_min = 440;
 
             const double center = (velocity_max + velocity_min) / 2;
             const double range = velocity_max - velocity_min;
