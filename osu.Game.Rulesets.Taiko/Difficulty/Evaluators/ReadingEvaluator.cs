@@ -9,11 +9,14 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
     public static class ReadingEvaluator
     {
         private const double high_sv_multiplier = 1.0;
+        private const double low_sv_multiplier = 4.0;
+        private const double low_velocity_threshold = 150;
 
         /// <summary>
-        /// Calculates the influence of higher slider velocities on hitobject difficulty.
-        /// The bonus is determined based on the EffectiveBPM, shifting within a defined range
+        /// Calculates the influence of higher and lower slider velocities on hitobject difficulty.
+        /// The higher bonus is determined based on the EffectiveBPM, shifting within a defined range
         /// between the upper and lower boundaries to reflect how increased slider velocity impacts difficulty.
+        /// The lower bonus is based on EffectiveBPM compared to a low velocity threshold.
         /// </summary>
         /// <param name="noteObject">The hit object to evaluate.</param>
         /// <returns>The reading difficulty value for the given hit object.</returns>
@@ -21,13 +24,38 @@ namespace osu.Game.Rulesets.Taiko.Difficulty.Evaluators
         {
             double effectiveBPM = noteObject.EffectiveBPM;
 
-            const double velocity_max = 640;
-            const double velocity_min = 480;
+            const double highend_velocity_max = 640;
+            const double highend_velocity_min = 440;
 
-            const double center = (velocity_max + velocity_min) / 2;
-            const double range = velocity_max - velocity_min;
+            const double highendcenter = (highend_velocity_max + highend_velocity_min) / 2;
+            const double highendrange = highend_velocity_max - highend_velocity_min;
 
-            return high_sv_multiplier * DifficultyCalculationUtils.Logistic(effectiveBPM, center, 1.0 / (range / 10));
+            const double lowend_velocity_max = 439;
+            const double lowend_velocity_min = 291;
+
+            const double lowendcenter = (lowend_velocity_max + lowend_velocity_min) / 2;
+            const double lowendrange = lowend_velocity_max - lowend_velocity_min;
+
+            double high_sv_bonus = high_sv_multiplier * ( DifficultyCalculationUtils.Logistic(effectiveBPM, highendcenter, 1.0 / (highendrange / 10)) + (.1 * DifficultyCalculationUtils.Logistic(effectiveBPM, lowendcenter, 1.0 / lowendrange / 10)));
+            
+            double low_sv_bonus = 0;
+            if (effectiveBPM < low_velocity_threshold)
+            {
+                low_sv_bonus = low_sv_multiplier * DifficultyCalculationUtils.Logistic(effectiveBPM, low_velocity_threshold, 1 / 100);
+            }
+            return high_sv_bonus +  low_sv_bonus;
+
+        }
+        /// <summary>
+        /// Calculates the object density based on the DeltaTime, EffectiveBPM, and CurrentSliderVelocity.
+        /// </summary>
+        /// <param name="noteObject">The current noteObject to evaluate.</param>
+        /// <returns>The calculated object density.</returns>
+        public static double CalculateObjectDensity(TaikoDifficultyHitObject noteObject)
+        {
+            double objectDensity = 50 * DifficultyCalculationUtils.Logistic(noteObject.DeltaTime, 200, 1.0 / 300);
+
+            return 1 - DifficultyCalculationUtils.Logistic(noteObject.EffectiveBPM, objectDensity, 1.0 / 240);
         }
     }
 }
